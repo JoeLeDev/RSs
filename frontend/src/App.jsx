@@ -4,7 +4,8 @@ import PrivateRoute from "./components/PrivateRoute";
 import GroupList from "./pages/GroupList";
 import Acceuil from "./pages/Acceuil";
 import GroupDetail from "./pages/GroupDetail";
-import Navbar from "./components/Navbar.jsx";
+import Footer from "./components/Footer.jsx";
+import Header from "./components/Header.jsx";
 import GroupMembersPage from "./pages/GroupMembersPage";
 import { ToastContainer } from "react-toastify";
 import { Toaster } from "@/components/ui/toaster";
@@ -14,7 +15,7 @@ import Profile from "./pages/Profile.jsx";
 function App() {
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar />
+      <Header />
       <ToastContainer position="bottom-right" autoClose={3000} />
       <Toaster />
       {/* Routes */}
@@ -74,6 +75,7 @@ function App() {
           }
         />
       </Routes>
+      <Footer />
     </div>
   );
 }
