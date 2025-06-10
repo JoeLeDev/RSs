@@ -64,7 +64,7 @@ exports.getDashboardPosts = async (req, res) => {
 
   try {
     const posts = await Post.find({ group: null })
-      .populate("author", "username email")
+      .populate("author", "username email imageUrl")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);

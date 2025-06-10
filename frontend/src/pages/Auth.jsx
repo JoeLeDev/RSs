@@ -23,7 +23,7 @@ const Auth = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [country, setCountry] = useState("");
-  const { login, signUp } = useAuth(); // Firebase Auth
+  const { login, signUp, userData } = useAuth(); // Ajout de userData ici
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -31,17 +31,29 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(email, password); // Firebase login
+      await login(email, password);
+      // Attendre un court instant pour s'assurer que les données utilisateur sont chargées
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       toast({
         title: "Connexion réussie",
         description: "Bienvenue !",
       });
-      navigate("/dashboard"); // Redirection après login
+      navigate("/dashboard");
     } catch (error) {
+      console.error("Erreur de connexion détaillée:", error);
+      let errorMessage = "Une erreur est survenue lors de la connexion";
+      
+      if (error.code === "auth/invalid-credential") {
+        errorMessage = "Email ou mot de passe incorrect";
+      } else if (error.code === "auth/too-many-requests") {
+        errorMessage = "Trop de tentatives de connexion. Veuillez réessayer plus tard";
+      }
+      
       toast({
         variant: "destructive",
         title: "Erreur de connexion",
-        description: error.message,
+        description: errorMessage,
       });
     } finally {
       setLoading(false);
