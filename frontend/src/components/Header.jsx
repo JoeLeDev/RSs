@@ -46,6 +46,9 @@ const Header = () => {
               <Link to="/groups" className="text-gray-700 hover:text-blue-600" onClick={toggleMenu}>
                 Groupes
               </Link>
+              <Link to="/events" className="text-gray-700 hover:text-blue-600" onClick={toggleMenu}>
+                Événements
+              </Link>
               <Link to="/profile" className="flex items-center" onClick={toggleMenu}>
                 {userData?.imageUrl ? (
                   <img

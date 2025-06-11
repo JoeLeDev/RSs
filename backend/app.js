@@ -1,57 +1,51 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const mongoose = require('mongoose');
 const path = require('path');
+
+// Routes
+const authRoutes = require('./routes/authRoutes');
+const postRoutes = require('./routes/postRoutes');
+const eventRoutes = require('./routes/eventRoutes');
+const userRoutes = require('./routes/userRoutes');
+const groupRoutes = require('./routes/groupRoutes');
 
 dotenv.config();
 
 const app = express();
 
-// -----------------------------
-// 🔗 Middlewares
-// -----------------------------
+// Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use(express.json());
 
-// Servir les fichiers statiques du dossier "uploads"
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Servir les fichiers statiques du dossier uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// -----------------------------
-// 🔗 Routes
-// -----------------------------
-const authRoutes = require('./routes/authRoutes');
-const groupRoutes = require('./routes/groupRoutes');
-const postRoutes = require('./routes/postRoutes');
-const uploadRoutes = require('./routes/uploadRoutes');
-const userRoutes = require('./routes/userRoutes');
-
+// Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/groups', groupRoutes);
 app.use('/api/posts', postRoutes);
-app.use('/api', uploadRoutes); // 
+app.use('/api/events', eventRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/groups', groupRoutes);
 
-// Middleware de diagnostic pour les routes utilisateur
-app.use('/api/users', (req, res, next) => {
-  console.log(`➡️ Requête reçue pour /api/users - Méthode: ${req.method}, Chemin: ${req.originalUrl}`);
-  next(); // Passe au prochain middleware ou routeur
-}, userRoutes); // <-- Ajouter le middleware juste avant userRoutes
-
-// Route de test
-app.get('/', (req, res) => {
-  console.log('➡️ Route GET / appelée');
-  res.send('✅ API is running');
-});
-
-// -----------------------------
-// 🔗 DB & Serveur
-// -----------------------------
+// Connexion à MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB Atlas connecté'))
-  .catch((err) => console.error('❌ Erreur connexion MongoDB :', err));
+  .catch(err => console.error('Erreur de connexion à MongoDB:', err));
+
+// Gestion des erreurs
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Une erreur est survenue sur le serveur.' });
+});
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {

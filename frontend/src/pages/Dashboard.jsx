@@ -6,6 +6,7 @@ import PostForm from '../components/post/PostForm';
 import PostList from '../components/post/PostList';
 import Banner from '../components/Banner';
 import DashboardImage from '../assets/Group.jpg';
+import CalendarComponent from '../components/CalendarComponent';
 
 const Dashboard = () => {
   const { userData, user, loading, logout } = useAuth();
@@ -74,6 +75,12 @@ const Dashboard = () => {
         
         {/* Liste des posts */}
         <PostList posts={posts} onDelete={fetchPosts} />
+
+        {/* Section Calendrier des Événements */}
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold mb-4">Mes Événements</h2>
+          <CalendarComponent />
+        </div>
       </div>
     </div>
   );
