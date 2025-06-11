@@ -1,15 +1,75 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import {
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  updateProfile,
-} from "firebase/auth";
+import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+   signOut, updateProfile, FacebookAuthProvider, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../Firebase";
 import axios from "axios";
 
 const AuthContext = createContext();
+
+const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
+
+googleProvider.addScope('profile');
+googleProvider.addScope('email');
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
+
+const loginWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const token = await result.user.getIdToken();
+    
+    // Synchronisation avec MongoDB
+    await axios.post(
+      "http://localhost:5001/api/auth/sync",
+      {
+        firebaseUid: result.user.uid,
+        email: result.user.email,
+        username: result.user.displayName,
+        imageUrl: result.user.photoURL || "",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    return result;
+  } catch (error) {
+    console.error("Erreur lors de la connexion avec Google :", error);
+    throw error;
+  }
+};
+
+const loginWithFacebook = async () => {
+  try {
+    const result = await signInWithPopup(auth, facebookProvider);
+    const token = await result.user.getIdToken();
+    
+    // Synchronisation avec MongoDB
+    await axios.post(
+      "http://localhost:5001/api/auth/sync",
+      {
+        firebaseUid: result.user.uid,
+        email: result.user.email,
+        username: result.user.displayName,
+        imageUrl: result.user.photoURL || "",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    return result;
+  } catch (error) {
+    console.error("Erreur lors de la connexion avec Facebook :", error);
+    throw error;
+  }
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // Firebase user
@@ -114,6 +174,8 @@ export const AuthProvider = ({ children }) => {
         signUp,
         logout,
         loading,
+        loginWithGoogle,
+        loginWithFacebook,
       }}
     >
       {!loading && children}
