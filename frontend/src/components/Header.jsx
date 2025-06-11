@@ -68,7 +68,7 @@ const Header = () => {
             </>
           ) : (
             <>
-            <Link to="/Acceuil" className="text-gray-700 hover:text-blue-600" onClick={toggleMenu}>
+            <Link to="/" className="text-gray-700 hover:text-blue-600" onClick={toggleMenu}>
                 Acceuil
               </Link>
               <Link to="/login" className="text-gray-700 hover:text-blue-600" onClick={toggleMenu}>

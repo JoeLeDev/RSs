@@ -20,13 +20,14 @@ function App() {
       <Toaster />
       {/* Routes */}
       <Routes>
-        <Route path="/login" element={<Auth />} />
+        <Route path="/login"
+         element={
+         <Auth />
+         } />
         <Route
           path="/"
           element={
-            <PrivateRoute>
-              <Acceuil />
-            </PrivateRoute>
+            <Acceuil />
           }
         />
 
