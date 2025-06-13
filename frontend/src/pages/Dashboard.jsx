@@ -69,15 +69,17 @@ const Dashboard = () => {
         height="h-[400px]"
       />
       
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Formulaire de création de post */}
-        <PostForm onPostCreated={fetchPosts} />
-        
-        {/* Liste des posts */}
-        <PostList posts={posts} onDelete={fetchPosts} />
+      <div className="max-w-6xl mx-auto px-4 py-8 md:flex">
+        <div className="flex-grow md:pr-8">
+          {/* Formulaire de création de post */}
+          <PostForm onPostCreated={fetchPosts} />
+          
+          {/* Liste des posts */}
+          <PostList posts={posts} onDelete={fetchPosts} />
+        </div>
 
         {/* Section Calendrier des Événements */}
-        <div className="mt-8">
+        <div className="mt-8 md:mt-0 md:w-96 md:sticky md:top-20 md:h-fit bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold mb-4">Mes Événements</h2>
           <CalendarComponent />
         </div>
