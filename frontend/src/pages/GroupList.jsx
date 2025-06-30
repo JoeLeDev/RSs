@@ -10,6 +10,8 @@ import FilterDropdown from "../components/FilterDropdown";
 import GroupImage from "../assets/group.jpg";
 import Banner from "../components/Banner";
 import { MapPin, Users, Calendar } from "lucide-react";
+import ContactList from "../components/ContactList";
+import ChatWindow from "../components/ChatWindow";
 
 const days = [
   "Lundi",
@@ -26,6 +28,7 @@ const GroupList = () => {
   const [groups, setGroups] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [meetingDay, setMeetingDay] = useState("");
+  const [meetingLocation, setMeetingLocation] = useState("");
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -34,6 +37,7 @@ const GroupList = () => {
   const [groupToEdit, setGroupToEdit] = useState(null);
   const [showManageModal, setShowManageModal] = useState(false);
   const [membershipFilter, setMembershipFilter] = useState("all");
+  const [selectedContact, setSelectedContact] = useState(null);
 
   const fetchGroups = async () => {
     const token = await user.getIdToken();
@@ -85,11 +89,12 @@ const GroupList = () => {
 
     try {
       const token = await user.getIdToken();
-      await API.post("/groups", { name, description, meetingDay }, { headers: { Authorization: `Bearer ${token}` } });
+      await API.post("/groups", { name, description, meetingDay, meetingLocation }, { headers: { Authorization: `Bearer ${token}` } });
       toast.success("Groupe créé !");
       setShowModal(false);
       setName("");
       setDescription("");
+      setMeetingLocation("");
       fetchGroups();
     } catch (err) {
       toast.error("Erreur lors de la création");
@@ -127,8 +132,7 @@ const GroupList = () => {
     const membership = membershipFilter;
 
     if (membership === "joined" && day) return `Mes groupes du ${day}`;
-    if (membership === "not_joined" && day)
-      return `Groupes disponibles du ${day}`;
+    if (membership === "not_joined" && day) return `Groupes disponibles du ${day}`;
     if (membership === "joined") return `Mes groupes`;
     if (membership === "not_joined") return `Groupes disponibles`;
     if (day) return `Groupes du ${day}`;
@@ -267,7 +271,7 @@ const GroupList = () => {
                     </p>
                     <p className="flex items-center gap-2">
                       <MapPin className="w-4 h-4" />
-                      {group.location || "Non définie"}
+                      {group.meetingLocation || "Non définie"}
                     </p>
                     <p className="flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
@@ -364,6 +368,24 @@ const GroupList = () => {
             onDelete={handleDeleteGroup}
           />
         )}
+      </div>
+
+      {/* Liste des contacts à droite */}
+      <div className="max-w-6xl mx-auto py-8 md:flex">
+        <div className="md:w-[400px] bg-white p-4 rounded-lg shadow-md">
+          {/* Contacts */}
+          <ContactList contacts={groups} onContactClick={setSelectedContact} />
+          {/* Fenêtre de chat */}
+          {selectedContact && (
+            <ChatWindow
+              contact={selectedContact}
+              onClose={() => setSelectedContact(null)}
+            />
+          )}
+          {/* Calendrier */}
+          <h2 className="text-2xl font-bold mb-4 mt-6">Mes Événements</h2>
+          <CalendarComponent />
+        </div>
       </div>
     </div>
   );

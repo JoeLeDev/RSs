@@ -77,3 +77,7 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.rbc-btn-group {
+  white-space: wrap !important;
+}

@@ -19,13 +19,14 @@ exports.getAllGroups = async (req, res) => {
 
 // ➕ Créer un groupe
 exports.createGroup = async (req, res) => {
-  const { name, description, meetingDay } = req.body;
+  const { name, description, meetingDay, meetingLocation } = req.body;
   if (!name || !meetingDay) return res.status(400).json({ message: "Nom et jour requis." });
   try {
     const group = await Group.create({
       name,
       description,
       meetingDay,
+      meetingLocation,
       createdBy: req.user._id,
       members: [req.user._id],
       roles: [{ userId: req.user._id, role: "pilote" }]
@@ -52,6 +53,7 @@ exports.updateGroup = async (req, res) => {
 
     group.name = req.body.name || group.name;
     group.description = req.body.description || group.description;
+    group.meetingLocation = req.body.meetingLocation || group.meetingLocation;
 
     await group.save();
 

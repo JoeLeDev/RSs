@@ -5,6 +5,7 @@ import API from "../api/axios";
 const ManageGroupModal = ({ group, members, onClose, onUpdate, onDelete }) => {
   const [name, setName] = useState(group.name);
   const [description, setDescription] = useState(group.description);
+  const [meetingLocation, setMeetingLocation] = useState(group.meetingLocation);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -17,7 +18,7 @@ const ManageGroupModal = ({ group, members, onClose, onUpdate, onDelete }) => {
     setLoading(true);
     setError("");
     try {
-      await onUpdate({ name, description });
+      await onUpdate({ name, description, meetingLocation });
       onClose();
     } catch (err) {
       setError("Erreur lors de la mise à jour");
@@ -44,7 +45,7 @@ const ManageGroupModal = ({ group, members, onClose, onUpdate, onDelete }) => {
             role: "pilote",
       });
       toast.success("Pilote mis à jour !");
-      await onUpdate({ name, description });; // 🔁 remet à jour le groupe dans la modale
+      await onUpdate({ name, description, meetingLocation });; // 🔁 remet à jour le groupe dans la modale
     } catch (error) {
       toast.error("Erreur lors de la mise à jour du pilote");
     }
@@ -77,6 +78,15 @@ console.log("Groupe reçu :", group);
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Lieu de rendez-vous</label>
+            <input
+              className="w-full border border-gray-300 px-3 py-2 rounded mt-1"
+              value={meetingLocation}
+              onChange={(e) => setMeetingLocation(e.target.value)}
+            />
           </div>
 
           <div className="flex justify-between mt-4">

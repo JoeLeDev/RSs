@@ -7,12 +7,16 @@ import PostList from '../components/post/PostList';
 import Banner from '../components/Banner';
 import DashboardImage from '../assets/Group.jpg';
 import CalendarComponent from '../components/CalendarComponent';
+import ContactList from "../components/ContactList";
+import ChatWindow from "../components/ChatWindow";
 
 const Dashboard = () => {
   const { userData, user, loading, logout } = useAuth();
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [contacts, setContacts] = useState([]);
+  const [selectedContact, setSelectedContact] = useState(null);
 
   const fetchPosts = async () => {
     if (!user) return;
@@ -34,6 +38,22 @@ const Dashboard = () => {
       fetchPosts();
     }
   }, [user, loading]);
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      if (!user) return;
+      try {
+        const token = await user.getIdToken();
+        const res = await API.get("/users", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setContacts(res.data.filter(u => u._id !== userData?._id)); // On ne s'affiche pas soi-même
+      } catch (err) {
+        setContacts([]);
+      }
+    };
+    fetchContacts();
+  }, [user, userData]);
 
   const handlePostCreated = () => {
     // Action à effectuer après la création d'un post (par exemple, rafraîchir la liste)
@@ -68,19 +88,26 @@ const Dashboard = () => {
         subtitle="Partagez vos moments avec la communauté"
         height="h-[400px]"
       />
-      
-      <div className="max-w-6xl mx-auto px-4 py-8 md:flex">
+      <div className="max-w-6xl mx-auto py-8 md:flex">
         <div className="flex-grow md:pr-8">
           {/* Formulaire de création de post */}
           <PostForm onPostCreated={fetchPosts} />
-          
           {/* Liste des posts */}
           <PostList posts={posts} onDelete={fetchPosts} />
         </div>
-
-        {/* Section Calendrier des Événements */}
-        <div className="mt-8 md:mt-0 md:w-96 md:sticky md:top-20 md:h-fit bg-white p-4 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-4">Mes Événements</h2>
+        {/* Colonne de droite : contacts + calendrier */}
+        <div className="md:w-[400px] bg-white p-4 rounded-lg shadow-md mt-8 md:mt-0">
+          {/* Contacts */}
+          <ContactList contacts={contacts} onContactClick={setSelectedContact} />
+          {/* Fenêtre de chat */}
+          {selectedContact && (
+            <ChatWindow
+              contact={selectedContact}
+              onClose={() => setSelectedContact(null)}
+            />
+          )}
+          {/* Calendrier */}
+          <h2 className="text-2xl font-bold mb-4 mt-6">Mes Événements</h2>
           <CalendarComponent />
         </div>
       </div>

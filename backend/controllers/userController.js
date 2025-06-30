@@ -73,3 +73,12 @@ exports.getUserById = async (req, res) => {
   }
 };
 
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, 'username imageUrl');
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur lors de la récupération des utilisateurs' });
+  }
+};
+

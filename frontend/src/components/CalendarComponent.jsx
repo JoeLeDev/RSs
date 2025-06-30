@@ -430,7 +430,7 @@ const CalendarComponent = () => {
             value={editedEvent.end}
             onChange={(e) => setEditedEvent({ ...editedEvent, end: e.target.value })}
           />
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 flex-wrap justify-center gap-2">
             <button
               onClick={() => handleUpdateEvent(selectedEvent.id, editedEvent)}
               className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
