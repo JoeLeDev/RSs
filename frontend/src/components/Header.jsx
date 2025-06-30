@@ -40,18 +40,18 @@ const Header = () => {
             <>
 
               <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
-                <LayoutDashboard className="w-4 h-4" /> Dashboard
+                <LayoutDashboard className="w-4 h-4 text-blue-700" /> Dashboard
               </Link>
               <Link to="/groups" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
-                <Users className="w-4 h-4" /> Groupes
+                <Users className="w-4 h-4 text-blue-700" /> Groupes
               </Link>
               <Link to="/events" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
-                <Calendar className="w-4 h-4" /> Événements
+                <Calendar className="w-4 h-4 text-blue-700" /> Événements
               </Link>
               <Link to="/messenger" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
-                <MessageCircle className="w-4 h-4" /> Messenger
+                <MessageCircle className="w-4 h-4 text-blue-700" /> Messenger
               </Link>
-              <Link to="/profile" className="flex items-center" onClick={toggleMenu}>
+              <Link to="/profile" className="flex items-center text-blue-700" onClick={toggleMenu}>
                 {userData?.imageUrl ? (
                   <img
                     src={userData.imageUrl}

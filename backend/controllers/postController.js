@@ -35,7 +35,7 @@ exports.getPostsByGroup = async (req, res) => {
 
   try {
     const posts = await Post.find({ group: groupId })
-      .populate("author", "username email")
+      .populate("author", "username email imageUrl")
       .populate("comments.author", "username")
       .sort({ createdAt: -1 })
       .skip(skip)
