@@ -10,6 +10,7 @@ const postRoutes = require('./routes/postRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const userRoutes = require('./routes/userRoutes');
 const groupRoutes = require('./routes/groupRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use('/api/posts', postRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/groups', groupRoutes);
+app.use('/api/messages', messageRoutes);
 
 // Connexion à MongoDB
 mongoose.connect(process.env.MONGO_URI)
