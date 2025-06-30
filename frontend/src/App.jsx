@@ -13,6 +13,7 @@ import Auth from "./pages/Auth.jsx";
 import Profile from "./pages/Profile.jsx";
 import Events from "./pages/Events.jsx";
 import EventDetailPage from "./pages/EventDetailPage.jsx";
+import Messenger from "./pages/messenger.jsx";
 
 function App() {
   return (
@@ -91,6 +92,14 @@ function App() {
             element={
               <PrivateRoute>
                 <EventDetailPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/messenger"
+            element={
+              <PrivateRoute>
+                <Messenger />
               </PrivateRoute>
             }
           />

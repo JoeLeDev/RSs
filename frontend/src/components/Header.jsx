@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useState } from 'react';
 import logo from '../assets/header/ICC-.png';
+import { Home, LayoutDashboard, Users, Calendar, MessageCircle } from 'lucide-react';
 
 const Header = () => {
   const { user, logout, userData } = useAuth();
@@ -37,17 +38,18 @@ const Header = () => {
         <div className="flex flex-col md:flex-row md:gap-4 gap-2 items-center md:items-center">
           {user ? (
             <>
-              <Link to="/" className="text-gray-700 hover:text-blue-600" onClick={toggleMenu}>
-                Accueil
+
+              <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
+                <LayoutDashboard className="w-4 h-4" /> Dashboard
               </Link>
-              <Link to="/dashboard" className="text-gray-700 hover:text-blue-600" onClick={toggleMenu}>
-                Dashboard
+              <Link to="/groups" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
+                <Users className="w-4 h-4" /> Groupes
               </Link>
-              <Link to="/groups" className="text-gray-700 hover:text-blue-600" onClick={toggleMenu}>
-                Groupes
+              <Link to="/events" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
+                <Calendar className="w-4 h-4" /> Événements
               </Link>
-              <Link to="/events" className="text-gray-700 hover:text-blue-600" onClick={toggleMenu}>
-                Événements
+              <Link to="/messenger" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
+                <MessageCircle className="w-4 h-4" /> Messenger
               </Link>
               <Link to="/profile" className="flex items-center" onClick={toggleMenu}>
                 {userData?.imageUrl ? (
@@ -71,8 +73,8 @@ const Header = () => {
             </>
           ) : (
             <>
-            <Link to="/" className="text-gray-700 hover:text-blue-600" onClick={toggleMenu}>
-                Acceuil
+            <Link to="/" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
+                <Home className="w-4 h-4" /> Acceuil
               </Link>
               <Link to="/login" className="text-gray-700 hover:text-blue-600" onClick={toggleMenu}>
                 Connexion

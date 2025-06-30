@@ -12,6 +12,7 @@ import Banner from "../components/Banner";
 import { MapPin, Users, Calendar } from "lucide-react";
 import ContactList from "../components/ContactList";
 import ChatWindow from "../components/ChatWindow";
+import CalendarComponent from "../components/CalendarComponent";
 
 const days = [
   "Lundi",
@@ -370,23 +371,6 @@ const GroupList = () => {
         )}
       </div>
 
-      {/* Liste des contacts à droite */}
-      <div className="max-w-6xl mx-auto py-8 md:flex">
-        <div className="md:w-[400px] bg-white p-4 rounded-lg shadow-md">
-          {/* Contacts */}
-          <ContactList contacts={groups} onContactClick={setSelectedContact} />
-          {/* Fenêtre de chat */}
-          {selectedContact && (
-            <ChatWindow
-              contact={selectedContact}
-              onClose={() => setSelectedContact(null)}
-            />
-          )}
-          {/* Calendrier */}
-          <h2 className="text-2xl font-bold mb-4 mt-6">Mes Événements</h2>
-          <CalendarComponent />
-        </div>
-      </div>
     </div>
   );
 };

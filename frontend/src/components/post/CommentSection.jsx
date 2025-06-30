@@ -10,6 +10,7 @@ const CommentSection = ({ post, onUpdate }) => {
   const [editingContent, setEditingContent] = useState("");
   const [addLoading, setAddLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
+  const [showHidden, setShowHidden] = useState(false);
 
   const handleAdd = async () => {
     if (!newComment.trim()) return;
@@ -72,59 +73,74 @@ const CommentSection = ({ post, onUpdate }) => {
     return null;
   }
 
+  // Affichage conditionnel des commentaires masqués
+  const visibleComments = showHidden
+    ? post.comments
+    : post.comments.filter((comment) => !comment.hidden);
+
+  const isAdminOrPilote = userData?.role === "admin" || canHide;
+
   return (
     <div className="mt-4 space-y-2">
-      {post.comments.map((comment) =>
-        !comment.hidden && (
-          <div key={comment._id} className="border p-2 rounded bg-gray-50">
-            {editingId === comment._id ? (
-              <div className="flex gap-2">
-                <input
-                  value={editingContent}
-                  onChange={(e) => setEditingContent(e.target.value)}
-                  className="border px-2 py-1 flex-1"
-                />
-                <button
-                  onClick={() => handleEdit(comment._id)}
-                  disabled={editLoading}
-                >
-                  💾
-                </button>
-              </div>
-            ) : (
-              <>
-                <p className="text-sm text-gray-700">
-                  <strong>{comment?.author?.username || "Utilisateur"}</strong> :{" "}
-                  {comment.content}
-                </p>
-                <div className="flex gap-2 text-sm mt-1 text-gray-500">
-                  {canEdit(comment) && (
-                    <button
-                      onClick={() => {
-                        setEditingId(comment._id);
-                        setEditingContent(comment.content);
-                      }}
-                    >
-                      <Pencil className="w-4 h-4 inline" />
-                    </button>
-                  )}
-                  {canDelete(comment) && (
-                    <button onClick={() => handleDelete(comment._id)}>
-                      <Trash className="w-4 h-4 inline" />
-                    </button>
-                  )}
-                  {canHide && (
-                    <button onClick={() => handleHide(comment._id)}>
-                      <EyeOff className="w-4 h-4 inline" />
-                    </button>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
-        )
+      {isAdminOrPilote && (
+        <button
+          onClick={() => setShowHidden((v) => !v)}
+          className="mb-2 px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 text-sm"
+        >
+          {showHidden ? "Masquer les commentaires masqués" : "Afficher les commentaires masqués"}
+        </button>
       )}
-
+      {visibleComments.map((comment) => (
+        <div key={comment._id} className={`border p-2 rounded bg-gray-50 ${comment.hidden ? "opacity-60" : ""}`}>
+          {editingId === comment._id ? (
+            <div className="flex gap-2">
+              <input
+                value={editingContent}
+                onChange={(e) => setEditingContent(e.target.value)}
+                className="border px-2 py-1 flex-1"
+              />
+              <button
+                onClick={() => handleEdit(comment._id)}
+                disabled={editLoading}
+              >
+                💾
+              </button>
+            </div>
+          ) : (
+            <>
+              <p className="text-sm text-gray-700">
+                <strong>{comment?.author?.username || "Utilisateur"}</strong> :{" "}
+                {comment.content}
+                {comment.hidden && (
+                  <span className="ml-2 text-xs text-red-500">(masqué)</span>
+                )}
+              </p>
+              <div className="flex gap-2 text-sm mt-1 text-gray-500">
+                {canEdit(comment) && (
+                  <button
+                    onClick={() => {
+                      setEditingId(comment._id);
+                      setEditingContent(comment.content);
+                    }}
+                  >
+                    <Pencil className="w-4 h-4 inline" />
+                  </button>
+                )}
+                {canDelete(comment) && (
+                  <button onClick={() => handleDelete(comment._id)}>
+                    <Trash className="w-4 h-4 inline" />
+                  </button>
+                )}
+                {canHide && (
+                  <button onClick={() => handleHide(comment._id)}>
+                    <EyeOff className="w-4 h-4 inline" />
+                  </button>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      ))}
       <div className="mt-2 flex gap-2">
         <input
           value={newComment}

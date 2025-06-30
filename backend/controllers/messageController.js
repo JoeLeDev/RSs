@@ -31,4 +31,23 @@ exports.getConversation = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Erreur lors de la récupération de la conversation" });
   }
+};
+
+// Récupérer tous les messages de l'utilisateur connecté (pour la liste des conversations)
+exports.getAllUserMessages = async (req, res) => {
+  const userId = req.user._id;
+  try {
+    const messages = await Message.find({
+      $or: [
+        { sender: userId },
+        { recipient: userId }
+      ]
+    })
+      .sort({ timestamp: -1 })
+      .populate("sender", "username imageUrl")
+      .populate("recipient", "username imageUrl");
+    res.status(200).json(messages);
+  } catch (err) {
+    res.status(500).json({ message: "Erreur lors de la récupération des messages" });
+  }
 }; 

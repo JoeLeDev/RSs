@@ -7,5 +7,7 @@ const auth = require("../middlewares/authMiddleware");
 router.post("/", auth, messageController.sendMessage);
 // Récupérer la conversation avec un utilisateur
 router.get("/:userId", auth, messageController.getConversation);
+// Récupérer tous les messages de l'utilisateur connecté
+router.get("/all", auth, messageController.getAllUserMessages);
 
 module.exports = router; 
