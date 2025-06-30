@@ -1,7 +1,7 @@
 import React from "react";
 
 const ContactList = ({ contacts, onContactClick }) => (
-  <div className="w-72 bg-white rounded-lg shadow-md p-4">
+  <div className="w-full bg-white rounded-lg shadow-md p-4">
     <h2 className="text-lg font-bold mb-4">Contacts</h2>
     <ul>
       {contacts.slice(0, 10).map((contact) => (

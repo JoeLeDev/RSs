@@ -107,7 +107,7 @@ const Dashboard = () => {
             />
           )}
           {/* Calendrier */}
-          <h2 className="text-2xl font-bold mb-4 mt-6">Mes Événements</h2>
+          <h2 className="text-1xl font-bold mb-4 mt-6">Mes Événements</h2>
           <CalendarComponent />
         </div>
       </div>
