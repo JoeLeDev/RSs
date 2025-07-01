@@ -14,6 +14,7 @@ import Profile from "./pages/Profile.jsx";
 import Events from "./pages/Events.jsx";
 import EventDetailPage from "./pages/EventDetailPage.jsx";
 import Messenger from "./pages/messenger.jsx";
+import PostDetail from "./pages/PostDetail";
 
 function App() {
   return (
@@ -100,6 +101,22 @@ function App() {
             element={
               <PrivateRoute>
                 <Messenger />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/messenger/:id"
+            element={
+              <PrivateRoute>
+                <Messenger />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/posts/:id"
+            element={
+              <PrivateRoute>
+                <PostDetail />
               </PrivateRoute>
             }
           />

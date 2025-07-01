@@ -1,13 +1,98 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import logo from '../assets/header/ICC-.png';
-import { Home, LayoutDashboard, Users, Calendar, MessageCircle } from 'lucide-react';
+import { Home, LayoutDashboard, Users, Calendar, MessageCircle, Bell } from 'lucide-react';
+import API from '../api/Axios';
+import { io } from 'socket.io-client';
+import { toast as toastify } from 'react-toastify';
 
 const Header = () => {
   const { user, logout, userData } = useAuth();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const notifRef = useRef();
+  const socketRef = useRef();
+
+  const fetchNotifications = async () => {
+    if (!user) return;
+    try {
+      const token = await user.getIdToken();
+      const res = await API.get('/notifications', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setNotifications(res.data);
+      setUnreadCount(res.data.filter(n => !n.isRead).length);
+    } catch (err) {
+      setNotifications([]);
+      setUnreadCount(0);
+    }
+  };
+
+  useEffect(() => { fetchNotifications(); }, [user]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setNotifOpen(false);
+      }
+    };
+    if (notifOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [notifOpen]);
+
+  useEffect(() => {
+    if (!userData?._id) return;
+    if (!socketRef.current) {
+      socketRef.current = io('http://localhost:5001', { withCredentials: true });
+      socketRef.current.on('connect', () => {
+        console.log('Socket.io connecté !');
+      });
+      socketRef.current.on('disconnect', () => {
+        console.log('Socket.io déconnecté !');
+      });
+    }
+    socketRef.current.emit('register', userData._id);
+
+    socketRef.current.off('notification');
+    const handler = (notif) => {
+      console.log('Notif reçue instantanément', notif);
+      fetchNotifications();
+      toastify.info(notif.content, { autoClose: 5000 });
+    };
+    socketRef.current.on('notification', handler);
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.off('notification', handler);
+      }
+    };
+  }, [userData]);
+
+  const handleNotifClick = async (notif) => {
+    if (!notif.isRead) {
+      try {
+        const token = await user.getIdToken();
+        await API.patch(`/notifications/${notif._id}/read`, {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        fetchNotifications();
+      } catch {}
+    }
+    setNotifOpen(false);
+    if (notif.link) {
+      navigate(notif.link);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -51,12 +136,42 @@ const Header = () => {
               <Link to="/messenger" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
                 <MessageCircle className="w-4 h-4 text-blue-700" /> Messenger
               </Link>
-              <Link to="/profile" className="flex items-center text-blue-700" onClick={toggleMenu}>
+              <button
+                className="relative text-gray-700 hover:text-blue-600 flex items-center gap-1 focus:outline-none"
+                title="Notifications"
+                onClick={() => setNotifOpen((v) => !v)}
+              >
+                <Bell className="w-5 h-5 text-blue-700" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[18px] text-center border border-white animate-pulse">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+              {notifOpen && (
+                <div ref={notifRef} className="absolute right-8 top-16 w-80 max-h-96 overflow-y-auto bg-white shadow-lg rounded-lg border z-50 animate-fade-in">
+                  <div className="p-3 border-b font-semibold text-gray-700">Notifications</div>
+                  {notifications.length === 0 && (
+                    <div className="p-4 text-gray-500 text-center">Aucune notification</div>
+                  )}
+                  {notifications.map((notif) => (
+                    <button
+                      key={notif._id}
+                      onClick={() => handleNotifClick(notif)}
+                      className={`w-full text-left px-4 py-3 border-b last:border-b-0 flex flex-col hover:bg-blue-50 transition ${notif.isRead ? 'opacity-70' : 'bg-blue-50/30 font-bold'}`}
+                    >
+                      <span className="text-sm">{notif.content}</span>
+                      <span className="text-xs text-gray-400 mt-1">{new Date(notif.createdAt).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' })}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              <Link to="/profile" className="flex items-center" onClick={toggleMenu}>
                 {userData?.imageUrl ? (
                   <img
                     src={userData.imageUrl}
                     alt="Photo de profil"
-                    className="w-8 h-8 rounded-full object-cover border border-gray-300"
+                    className="w-8 h-8 rounded-full object-cover border border-gray-700"
                   />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-sm font-semibold">

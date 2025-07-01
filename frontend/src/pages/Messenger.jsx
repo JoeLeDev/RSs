@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import API from "../api/Axios";
 import { useAuth } from "../contexts/AuthContext";
 import ConversationView from "../components/ConversationView";
+import { useParams } from "react-router-dom";
 
 // Placeholder pour la liste des conversations
 const ConversationList = ({ conversations, onSelect, selectedId }) => (
@@ -40,10 +41,9 @@ const ConversationList = ({ conversations, onSelect, selectedId }) => (
   </div>
 );
 
-
-
 const Messenger = () => {
   const { user, userData } = useAuth();
+  const { id: urlId } = useParams();
   const [members, setMembers] = useState([]);
   const [conversations, setConversations] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -96,6 +96,21 @@ const Messenger = () => {
     };
     fetchConversations();
   }, [user, userData]);
+
+  useEffect(() => {
+    if (!urlId) return;
+    // Cherche d'abord dans les conversations
+    const conv = conversations.find(c => c.user._id === urlId);
+    if (conv) {
+      setSelected(conv);
+    } else {
+      // Sinon, cherche dans les membres
+      const member = members.find(m => m._id === urlId);
+      if (member) {
+        setSelected({ _id: member._id, user: member });
+      }
+    }
+  }, [urlId, conversations, members]);
 
   // Membres filtrés par recherche et sans conversation existante
   const filteredMembers = members.filter(

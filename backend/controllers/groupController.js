@@ -3,6 +3,7 @@ const Group = require("../models/Group");
 const User = require("../models/User");
 const { defineAbilityFor } = require("../abilities/defineAbilityFor");
 const mongoose = require("mongoose");
+const Notification = require("../models/Notification");
 
 // 🔁 Obtenir tous les groupes
 exports.getAllGroups = async (req, res) => {
@@ -107,6 +108,23 @@ exports.joinGroup = async (req, res) => {
       group.members.push(req.user._id);
       group.roles.push({ userId: req.user._id, role: "membre" });
       await group.save();
+      // Notifier le pilote/admin du groupe
+      const pilot = group.roles.find(r => r.role === "pilote");
+      if (pilot && pilot.userId.toString() !== req.user._id) {
+        const user = await User.findById(req.user._id);
+        const notif = await Notification.create({
+          user: pilot.userId,
+          type: "group_invite",
+          content: `${user?.username || "Un membre"} a rejoint votre groupe` ,
+          link: `/groups/${group._id}`
+        });
+        // Notif temps réel
+        const io = req.app.get('io');
+        const userSockets = req.app.get('userSockets');
+        if (userSockets && io && userSockets[pilot.userId]) {
+          io.to(userSockets[pilot.userId]).emit('notification', notif);
+        }
+      }
     }
     res.status(200).json({ message: "Inscription réussie" });
   } catch (err) {

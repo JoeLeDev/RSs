@@ -20,4 +20,6 @@ router.patch("/:id/comments/:commentId/hide", auth, postController.hideComment);
 router.get("/:id/comments", auth, postController.getComments);
 router.get("/:id/comments/:commentId", auth, postController.getComment);
 
+router.get("/:id", auth, postController.getPostById);
+
 module.exports = router;

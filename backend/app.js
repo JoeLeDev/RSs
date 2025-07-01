@@ -11,6 +11,8 @@ const eventRoutes = require('./routes/eventRoutes');
 const userRoutes = require('./routes/userRoutes');
 const groupRoutes = require('./routes/groupRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 
 dotenv.config();
 
@@ -37,6 +39,8 @@ app.use('/api/events', eventRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api', uploadRoutes);
 
 // Connexion à MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -49,7 +53,4 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Une erreur est survenue sur le serveur.' });
 });
 
-const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
-  console.log(`🚀 Server started on http://localhost:${PORT}`);
-});
+module.exports = app;

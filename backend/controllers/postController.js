@@ -1,6 +1,7 @@
 const Post = require("../models/Post");
 const mongoose = require("mongoose");
 const User = require("../models/User");
+const Notification = require("../models/Notification");
 
 // Créer un post
 exports.createPost = async (req, res) => {
@@ -171,6 +172,23 @@ exports.addComment = async (req, res) => {
 
     await post.populate("comments.author", "username");
 
+    // Notification à l'auteur du post (sauf si c'est lui-même)
+    if (post.author.toString() !== req.user._id) {
+      const user = await User.findById(req.user._id);
+      const notif = await Notification.create({
+        user: post.author,
+        type: "reaction",
+        content: `${user?.username || "Un membre"} a commenté votre post`,
+        link: `/posts/${post._id}`,
+      });
+      // Notif temps réel
+      const io = req.app.get('io');
+      const userSockets = req.app.get('userSockets');
+      if (userSockets && io && userSockets[post.author]) {
+        io.to(userSockets[post.author]).emit('notification', notif);
+      }
+    }
+
     res.status(201).json(post.comments[post.comments.length - 1]);
   } catch (err) {
     res.status(500).json({ message: "Erreur lors de l'ajout du commentaire" });
@@ -294,6 +312,23 @@ exports.likePost = async (req, res) => {
     await post.populate('author', 'username email');
     await post.populate('comments.author', 'username');
 
+    // Notification à l'auteur du post (sauf si c'est lui-même)
+    if (post.author.toString() !== req.user._id) {
+      const user = await User.findById(req.user._id);
+      const notif = await Notification.create({
+        user: post.author,
+        type: "reaction",
+        content: `${user?.username || "Un membre"} a aimé votre post`,
+        link: `/posts/${post._id}`,
+      });
+      // Notif temps réel
+      const io = req.app.get('io');
+      const userSockets = req.app.get('userSockets');
+      if (userSockets && io && userSockets[post.author]) {
+        io.to(userSockets[post.author]).emit('notification', notif);
+      }
+    }
+
     res.json(post);
   } catch (error) {
     console.error("Erreur lors du like:", error);
@@ -352,5 +387,18 @@ exports.syncUser = async (req, res) => {
   } catch (error) {
     console.error("Erreur syncUser :", error);
     res.status(500).json({ message: "Erreur lors de la synchronisation" });
+  }
+};
+
+// Récupérer un post par son ID
+exports.getPostById = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id)
+      .populate('author', 'username imageUrl')
+      .populate('comments.author', 'username imageUrl');
+    if (!post) return res.status(404).json({ message: 'Post introuvable' });
+    res.json(post);
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur lors de la récupération du post' });
   }
 };
