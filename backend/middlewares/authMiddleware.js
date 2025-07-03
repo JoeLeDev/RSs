@@ -26,6 +26,7 @@ module.exports = async function (req, res, next) {
       email: userMongo.email,
       role: userMongo.role,
     };
+    console.log('Utilisateur authentifié:', req.user);
     next();
   } catch (error) {
     return res.status(401).json({ message: "Token invalide" });

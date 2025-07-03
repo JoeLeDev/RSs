@@ -24,4 +24,17 @@ exports.markAsRead = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Erreur lors de la mise à jour" });
   }
+};
+
+// Marquer toutes les notifications comme lues
+exports.markAllAsRead = async (req, res) => {
+  try {
+    await Notification.updateMany(
+      { user: req.user._id, isRead: false },
+      { $set: { isRead: true } }
+    );
+    res.status(200).json({ message: "Toutes les notifications marquées comme lues." });
+  } catch (err) {
+    res.status(500).json({ message: "Erreur lors du marquage des notifications." });
+  }
 }; 

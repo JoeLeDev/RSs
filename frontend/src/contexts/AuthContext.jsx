@@ -165,11 +165,29 @@ export const AuthProvider = ({ children }) => {
     setUserData(null);
   };
 
+  const refreshUserData = async () => {
+    try {
+      const token = await auth.currentUser.getIdToken();
+      const res = await axios.get("http://localhost:5001/api/users/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUserData(res.data); 
+      return res.data; 
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données utilisateur", error);
+      return null;
+    }
+  };
+  
+
   return (
     <AuthContext.Provider
       value={{
-        user,      // Firebase user (getIdToken, etc.)
-        userData,  // Mongo user (role, _id, etc.)
+        user,      
+        userData,  
+        refreshUserData,
         login,
         signUp,
         logout,

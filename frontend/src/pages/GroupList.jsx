@@ -25,7 +25,7 @@ const days = [
 ];
 
 const GroupList = () => {
-  const { user, userData } = useAuth();
+  const { user, userData, refreshUserData } = useAuth();
   const [groups, setGroups] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [meetingDay, setMeetingDay] = useState("");
@@ -50,6 +50,11 @@ const GroupList = () => {
   };
 
   useEffect(() => { if (user) fetchGroups(); }, [user]);
+
+  useEffect(() => {
+    if (refreshUserData) refreshUserData();
+    // eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     let result = [...groups];

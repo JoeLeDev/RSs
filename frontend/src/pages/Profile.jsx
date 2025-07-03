@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import API from '../api/Axios';
 import { toast } from 'react-toastify';
+import { useLocation, useParams } from 'react-router-dom';
+import FriendButton from '../components/FriendButton';
 
 const Profile = () => {
-  const { user, userData, loading: authLoading } = useAuth();
+  const { user, userData, loading: authLoading, refreshUserData } = useAuth();
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,14 +14,24 @@ const Profile = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const acceptFriendRequestParam = params.get('acceptFriendRequest');
+  const [acceptLoading, setAcceptLoading] = useState(false);
+  const { id } = useParams();
+  const isOwnProfile = !id || id === userData?._id || id === "me";
 
   useEffect(() => {
+    if (!user || !userData || authLoading) return;
     const fetchProfile = async () => {
-      if (!user || !userData) return;
-
       try {
         setLoading(true);
-        const res = await API.get(`/users/${userData._id}`);
+        let res;
+        if (!id || id === userData._id || id === "me") {
+          res = await API.get(`/users/me`);
+        } else {
+          res = await API.get(`/users/${id}`);
+        }
         setProfileData(res.data);
         setFormData({
           username: res.data.username || '',
@@ -38,11 +50,13 @@ const Profile = () => {
         setLoading(false);
       }
     };
+    fetchProfile();
+  }, [user, userData, authLoading, id]);
 
-    if (!authLoading) {
-       fetchProfile();
-    }
-  }, [user, userData, authLoading]);
+  useEffect(() => {
+    if (refreshUserData) refreshUserData();
+    // eslint-disable-next-line
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -109,6 +123,25 @@ const Profile = () => {
     }
   };
 
+  const handleAcceptFromNotif = async () => {
+    setAcceptLoading(true);
+    try {
+      await API.post('/users/friends/accept', { userId: profileData._id });
+      toast.success('Demande d\'ami acceptée !');
+      window.location.reload();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Erreur d'acceptation");
+    } finally {
+      setAcceptLoading(false);
+    }
+  };
+
+  const handleActionDone = async () => {
+    await fetchMembers();
+    if (refreshUserData) await refreshUserData();
+    window.location.reload();
+  };
+
   if (authLoading || loading) {
     return <div className="text-center mt-6">Chargement du profil...</div>;
   }
@@ -123,7 +156,7 @@ const Profile = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Mon Profil</h1>
+
 
       <div className="bg-white p-6 rounded-lg shadow-md">
         <div className="flex items-center mb-4">
@@ -133,84 +166,94 @@ const Profile = () => {
             <p className="text-gray-600">{profileData.email}</p>
             {profileData.role && <p className="text-gray-600">Rôle: {profileData.role}</p>}
             {profileData.country && <p className="text-gray-600">Pays: {profileData.country}</p>}
+            {userData && profileData._id !== userData._id && !isOwnProfile && (
+              <div className="mt-2">
+                <FriendButton
+                  profileUserId={profileData._id}
+                  onActionDone={handleActionDone}
+                />
+              </div>
+            )}
           </div>
         </div>
 
-        <h3 className="text-lg font-semibold mt-6 mb-3">Modifier mon profil</h3>
-        <form onSubmit={handleUpdateProfile} className="space-y-4">
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100 cursor-not-allowed"
-              disabled
-            />
-            <p className="mt-1 text-sm text-gray-600">Pour changer d'email, contactez l'administrateur.</p>
-          </div>
-          <div>
-            <label htmlFor="country" className="block text-sm font-medium text-gray-700">Pays</label>
-            <input
-              type="text"
-              id="country"
-              name="country"
-              value={formData.country}
-              onChange={handleInputChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-            />
-          </div>
-          <div>
-            <label htmlFor="profilePicture" className="block text-sm font-medium text-gray-700 mb-1">Photo de profil</label>
-            <input
-              type="file"
-              id="profilePicture"
-              name="profilePicture"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="block w-full text-sm text-gray-500
-                file:mr-4 file:py-2 file:px-4
-                file:rounded-full file:border-0
-                file:text-sm file:font-semibold
-                file:bg-blue-50 file:text-blue-700
-                hover:file:bg-blue-100
-              "
-            />
-            {imagePreviewUrl && !selectedImage && (
-                <p className="text-sm text-gray-500 mt-1">Image actuelle :</p>
-            )}
-            {imagePreviewUrl && (
-              <img
-                src={imagePreviewUrl}
-                alt="Aperçu photo de profil"
-                className="mt-2 w-24 h-24 rounded-full object-cover border-2 border-blue-500"
+        {isOwnProfile && (
+          <form onSubmit={handleUpdateProfile} className="space-y-4">
+            <h3 className="text-lg font-semibold mt-6 mb-3">Modifier mon profil</h3>
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                value={formData.username}
+                onChange={handleInputChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                required
               />
-            )}
-          </div>
-          <div>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-              disabled={isUpdating}
-            >
-              {isUpdating ? 'Sauvegarde...' : 'Sauvegarder les modifications'}
-            </button>
-          </div>
-        </form>
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100 cursor-not-allowed"
+                disabled
+              />
+              <p className="mt-1 text-sm text-gray-600">Pour changer d'email, contactez l'administrateur.</p>
+            </div>
+            <div>
+              <label htmlFor="country" className="block text-sm font-medium text-gray-700">Pays</label>
+              <input
+                type="text"
+                id="country"
+                name="country"
+                value={formData.country}
+                onChange={handleInputChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+            </div>
+            <div>
+              <label htmlFor="profilePicture" className="block text-sm font-medium text-gray-700 mb-1">Photo de profil</label>
+              <input
+                type="file"
+                id="profilePicture"
+                name="profilePicture"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="block w-full text-sm text-gray-500
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-full file:border-0
+                  file:text-sm file:font-semibold
+                  file:bg-blue-50 file:text-blue-700
+                  hover:file:bg-blue-100
+                "
+              />
+              {imagePreviewUrl && !selectedImage && (
+                  <p className="text-sm text-gray-500 mt-1">Image actuelle :</p>
+              )}
+              {imagePreviewUrl && (
+                <img
+                  src={imagePreviewUrl}
+                  alt="Aperçu photo de profil"
+                  className="mt-2 w-24 h-24 rounded-full object-cover border-2 border-blue-500"
+                />
+              )}
+            </div>
+            <div>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                disabled={isUpdating}
+              >
+                {isUpdating ? 'Sauvegarde...' : 'Sauvegarder les modifications'}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

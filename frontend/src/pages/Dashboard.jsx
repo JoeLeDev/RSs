@@ -11,7 +11,7 @@ import ContactList from "../components/ContactList";
 import ChatWindow from "../components/ChatWindow";
 
 const Dashboard = () => {
-  const { userData, user, loading, logout } = useAuth();
+  const { user, userData, loading, logout, refreshUserData } = useAuth();
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,6 +55,11 @@ const Dashboard = () => {
     fetchContacts();
   }, [user, userData]);
 
+  useEffect(() => {
+    if (refreshUserData) refreshUserData();
+    // eslint-disable-next-line
+  }, []);
+
   const handlePostCreated = () => {
     // Action à effectuer après la création d'un post (par exemple, rafraîchir la liste)
     fetchPosts();
@@ -68,6 +73,13 @@ const Dashboard = () => {
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const handleContactActionDone = () => {
+    // Rafraîchir la liste des contacts après action d'amitié
+    if (user) {
+      fetchContacts();
+    }
   };
 
   if (loading || isLoading) {
@@ -98,7 +110,13 @@ const Dashboard = () => {
         {/* Colonne de droite : contacts + calendrier */}
         <div className="md:w-[400px] bg-white p-4 rounded-lg shadow-md mt-8 md:mt-0">
           {/* Contacts */}
-          <ContactList contacts={contacts} onContactClick={setSelectedContact} />
+          <ContactList
+            contacts={contacts}
+            onContactClick={setSelectedContact}
+            currentUserId={userData?._id}
+            currentUserData={userData}
+            onActionDone={handleContactActionDone}
+          />
           {/* Fenêtre de chat */}
           {selectedContact && (
             <ChatWindow

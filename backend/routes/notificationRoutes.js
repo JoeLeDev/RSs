@@ -7,5 +7,7 @@ const auth = require("../middlewares/authMiddleware");
 router.get("/", auth, notificationController.getNotifications);
 // Marquer une notification comme lue
 router.patch("/:id/read", auth, notificationController.markAsRead);
+// Marquer toutes les notifications comme lues
+router.patch('/mark-all-read', auth, notificationController.markAllAsRead);
 
 module.exports = router; 

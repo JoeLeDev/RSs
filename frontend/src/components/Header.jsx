@@ -91,6 +91,7 @@ const Header = () => {
     setNotifOpen(false);
     if (notif.link) {
       navigate(notif.link);
+      setTimeout(() => window.location.reload(), 100);
     }
   };
 
@@ -101,6 +102,18 @@ const Header = () => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      const token = await user.getIdToken();
+      await API.patch('/notifications/mark-all-read', {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchNotifications();
+    } catch (err) {
+      toastify.error("Erreur lors du marquage des notifications.");
+    }
   };
 
   return (
@@ -130,6 +143,9 @@ const Header = () => {
               <Link to="/groups" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
                 <Users className="w-4 h-4 text-blue-700" /> Groupes
               </Link>
+              <Link to="/members" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
+                <Users className="w-4 h-4 text-blue-700" /> Membres
+              </Link>
               <Link to="/events" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
                 <Calendar className="w-4 h-4 text-blue-700" /> Événements
               </Link>
@@ -143,14 +159,24 @@ const Header = () => {
               >
                 <Bell className="w-5 h-5 text-blue-700" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[18px] text-center border border-white animate-pulse">
+                  <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] rounded-full px-1 py-0.5 min-w-[14px] h-[16px] flex items-center justify-center border border-white animate-pulse">
                     {unreadCount}
                   </span>
                 )}
               </button>
               {notifOpen && (
                 <div ref={notifRef} className="absolute right-8 top-16 w-80 max-h-96 overflow-y-auto bg-white shadow-lg rounded-lg border z-50 animate-fade-in">
-                  <div className="p-3 border-b font-semibold text-gray-700">Notifications</div>
+                  <div className="p-3 border-b font-semibold text-gray-700 flex items-center justify-between">
+                    <span>Notifications</span>
+                    {unreadCount > 0 && (
+                      <button
+                        onClick={handleMarkAllAsRead}
+                        className="text-xs text-blue-600 hover:underline px-2 py-1 rounded"
+                      >
+                        Tout marquer comme lu
+                      </button>
+                    )}
+                  </div>
                   {notifications.length === 0 && (
                     <div className="p-4 text-gray-500 text-center">Aucune notification</div>
                   )}
