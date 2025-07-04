@@ -4,12 +4,13 @@ import API from '../api/Axios';
 import { toast } from 'react-toastify';
 import { useLocation, useParams } from 'react-router-dom';
 import FriendButton from '../components/FriendButton';
+import isOwnProfile from '../utils/isOwnProfile';
+import useUserProfile from '../hooks/useUserProfile';
 
 const Profile = () => {
+  const { id } = useParams();
   const { user, userData, loading: authLoading, refreshUserData } = useAuth();
-  const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { profileData, loading, error } = useUserProfile(id, userData);
   const [formData, setFormData] = useState({ username: '', email: '', country: '' });
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -18,40 +19,7 @@ const Profile = () => {
   const params = new URLSearchParams(location.search);
   const acceptFriendRequestParam = params.get('acceptFriendRequest');
   const [acceptLoading, setAcceptLoading] = useState(false);
-  const { id } = useParams();
-  const isOwnProfile = !id || id === userData?._id || id === "me";
-
-  useEffect(() => {
-    if (!user || !userData || authLoading) return;
-    const fetchProfile = async () => {
-      try {
-        setLoading(true);
-        let res;
-        if (!id || id === userData._id || id === "me") {
-          res = await API.get(`/users/me`);
-        } else {
-          res = await API.get(`/users/${id}`);
-        }
-        setProfileData(res.data);
-        setFormData({
-          username: res.data.username || '',
-          email: res.data.email || '',
-          country: res.data.country || ''
-        });
-        if (res.data.imageUrl) {
-          setImagePreviewUrl(res.data.imageUrl);
-        }
-        setError(null);
-      } catch (err) {
-        console.error("Erreur lors de la récupération du profil :", err);
-        setError("Impossible de charger les informations du profil.");
-        setProfileData(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProfile();
-  }, [user, userData, authLoading, id]);
+  const ownProfile = isOwnProfile(id, userData);
 
   useEffect(() => {
     if (refreshUserData) refreshUserData();
@@ -166,7 +134,7 @@ const Profile = () => {
             <p className="text-gray-600">{profileData.email}</p>
             {profileData.role && <p className="text-gray-600">Rôle: {profileData.role}</p>}
             {profileData.country && <p className="text-gray-600">Pays: {profileData.country}</p>}
-            {userData && profileData._id !== userData._id && !isOwnProfile && (
+            {userData && profileData._id !== userData._id && !ownProfile && (
               <div className="mt-2">
                 <FriendButton
                   profileUserId={profileData._id}
@@ -177,7 +145,7 @@ const Profile = () => {
           </div>
         </div>
 
-        {isOwnProfile && (
+        {ownProfile && (
           <form onSubmit={handleUpdateProfile} className="space-y-4">
             <h3 className="text-lg font-semibold mt-6 mb-3">Modifier mon profil</h3>
             <div>

@@ -19,7 +19,6 @@ exports.syncUser = async (req, res) => {
 
     res.status(200).json(user);
   } catch (error) {
-    console.error("Erreur syncUser :", error);
     res.status(500).json({ message: "Erreur lors de la synchronisation" });
   }
 };
@@ -27,7 +26,7 @@ exports.syncUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   const userId = req.user.firebaseUid; // <-- Utiliser firebaseUid de req.user
-  const { username, imageUrl, country } = req.body;
+  const { username, imageUrl, country, notifEmail, notifPush } = req.body;
 
   try {
     const updateFields = {};
@@ -36,6 +35,8 @@ exports.updateUser = async (req, res) => {
     if (username !== undefined) updateFields.username = username;
     if (imageUrl !== undefined) updateFields.imageUrl = imageUrl;
     if (country !== undefined) updateFields.country = country;
+    if (notifEmail !== undefined) updateFields.notifEmail = notifEmail;
+    if (notifPush !== undefined) updateFields.notifPush = notifPush;
 
     const updatedUser = await User.findOneAndUpdate(
       { firebaseUid: userId }, // <-- Recherche par firebaseUid
@@ -50,7 +51,6 @@ exports.updateUser = async (req, res) => {
 
     res.status(200).json({ user: updatedUser });
   } catch (err) {
-    console.error("Erreur updateUser :", err);
     res.status(500).json({ message: "Erreur mise à jour profil" });
   }
 };
@@ -60,19 +60,14 @@ exports.getUserById = async (req, res) => {
   if (req.params.userId === 'me') {
     return res.status(400).json({ message: "Utilisez /api/users/me pour l'utilisateur courant." });
   }
-  console.log("GET /api/users/:userId called"); // Log de début de fonction
   const userId = req.params.userId;
-  console.log("Requested User ID:", userId); // Log de l'ID reçu
   try {
     const user = await User.findById(userId).select("-password -firebaseUid"); // Utiliser l'ID reçu
-    console.log("User found in DB:", user); // Log du résultat de la recherche
     if (!user) {
-      console.log("User not found for ID:", userId); // Log si l'utilisateur n'est pas trouvé
       return res.status(404).json({ message: "Utilisateur introuvable" });
     }
     res.status(200).json(user);
   } catch (err) {
-    console.error("Erreur GET /api/users/:userId:", err); // Log d'erreur
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
@@ -152,7 +147,6 @@ exports.acceptFriendRequest = async (req, res) => {
     }
     res.status(200).json({ message: "Demande d'ami acceptée." });
   } catch (err) {
-    console.error("Erreur lors de l'acceptation d'une demande d'ami :", err);
     res.status(500).json({ message: "Erreur lors de l'acceptation de la demande d'ami.", error: err?.message || err });
   }
 };
@@ -243,6 +237,18 @@ exports.getMe = async (req, res) => {
     res.status(200).json(user);
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
+// Suppression du compte utilisateur courant
+exports.deleteMe = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    await User.deleteOne({ _id: userId });
+    // TODO : supprimer les données associées (posts, messages, etc.) si besoin
+    res.status(200).json({ message: 'Compte supprimé.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur lors de la suppression du compte.' });
   }
 };
 

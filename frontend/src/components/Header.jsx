@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useState, useEffect, useRef } from 'react';
 import logo from '../assets/header/ICC-.png';
-import { Home, LayoutDashboard, Users, Calendar, MessageCircle, Bell } from 'lucide-react';
+import { Home, LayoutDashboard, Users, Calendar, MessageCircle, Bell, Settings } from 'lucide-react';
 import API from '../api/Axios';
 import { io } from 'socket.io-client';
 import { toast as toastify } from 'react-toastify';
@@ -151,6 +151,9 @@ const Header = () => {
               </Link>
               <Link to="/messenger" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
                 <MessageCircle className="w-4 h-4 text-blue-700" /> Messenger
+              </Link>
+              <Link to="/settings" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
+                <Settings className="w-4 h-4 text-blue-700" /> Paramètres
               </Link>
               <button
                 className="relative text-gray-700 hover:text-blue-600 flex items-center gap-1 focus:outline-none"

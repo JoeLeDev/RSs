@@ -7,6 +7,7 @@ import GroupDetail from "./pages/GroupDetail";
 import Footer from "./components/Footer.jsx";
 import Header from "./components/Header.jsx";
 import Members from "./pages/Members";
+import Parameters from "./pages/Settings";
 import { ToastContainer } from "react-toastify";
 import { Toaster } from "@/components/ui/toaster";
 import Auth from "./pages/Auth.jsx";
@@ -133,6 +134,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Members />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <PrivateRoute>
+                <Parameters />
               </PrivateRoute>
             }
           />

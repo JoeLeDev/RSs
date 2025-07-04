@@ -3,7 +3,7 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const auth = require("../middlewares/authMiddleware");
 
-// Get user profile (me)
+// IMPORTANT : Placer cette route AVANT /:userId pour qu'Express ne route pas /me comme un userId !
 router.get('/me', auth, userController.getMe);
 
 // Get user by ID
@@ -23,5 +23,8 @@ router.post('/friends/cancel', auth, userController.cancelFriendRequest);
 router.post('/friends/remove', auth, userController.removeFriend);
 router.get('/friends', auth, userController.getFriends);
 router.get('/friends/requests', auth, userController.getFriendRequests);
+
+// Suppression du compte utilisateur courant
+router.delete('/me', auth, userController.deleteMe);
 
 module.exports = router; 

@@ -15,7 +15,9 @@ const userSchema = new mongoose.Schema({
   },
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   friendRequestsSent: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  friendRequestsReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+  friendRequestsReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  notifEmail: { type: Boolean, default: true },
+  notifPush: { type: Boolean, default: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema);
