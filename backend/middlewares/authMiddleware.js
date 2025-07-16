@@ -1,5 +1,14 @@
 const admin = require("firebase-admin");
-const serviceAccount = require("../config/myicconline-firebase-adminsdk-fbsvc-caeee6bf8e.json");
+let serviceAccount;
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  try {
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  } catch (e) {
+    throw new Error('La variable FIREBASE_SERVICE_ACCOUNT n\'est pas un JSON valide');
+  }
+} else {
+  serviceAccount = require("../config/myicconline-firebase-adminsdk-fbsvc-caeee6bf8e.json");
+}
 const User = require("../models/User");
 
 if (!admin.apps.length) {
