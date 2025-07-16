@@ -69,7 +69,7 @@ const PostList = ({ posts = [], onDelete }) => {
         return (
           <div
             key={post._id}
-            className="bg-white p-6 rounded-xl shadow-sm relative"
+            className="bg-white  rounded-xl shadow-sm relative"
           >
             {(userData?._id === post.author._id || userData?.role === "admin") && (
               <div className="absolute top-3 right-3">
@@ -104,14 +104,13 @@ const PostList = ({ posts = [], onDelete }) => {
             {/* Section Auteur avec photo de profil */}
             <div className="flex items-center mb-3">
               {/* Photo de profil de l'auteur */}
-              {post.author.imageUrl ? (
+              {post.author.imageUrl && post.author.imageUrl.trim() !== "" ? (
                 <img
                   src={post.author.imageUrl}
                   alt={`${post.author.username} avatar`}
                   className="w-10 h-10 rounded-full object-cover mr-3 border border-gray-200"
                 />
               ) : (
-                // Placeholder si pas de photo
                 <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-sm font-semibold mr-3">
                   {post.author.username ? post.author.username.charAt(0).toUpperCase() : ''}
                 </div>
@@ -131,32 +130,35 @@ const PostList = ({ posts = [], onDelete }) => {
             <p className="text-gray-700 whitespace-pre-line mb-4">{post.content}</p>
 
             {post.fileUrl && (
-              <div className="mt-3">
-                {post.fileUrl.match(/\.(jpg|jpeg|png|gif)$/i) ? (
-                  <img
-                    src={post.fileUrl}
-                    alt="Media"
-                    className="max-h-64 rounded object-contain border"
-                  />
-                ) : post.fileUrl.endsWith(".mp4") ? (
-                  <video controls className="w-full max-h-64 rounded border">
-                    <source src={post.fileUrl} type="video/mp4" />
-                  </video>
-                ) : post.fileUrl.endsWith(".mp3") ? (
-                  <audio controls className="w-full mt-2">
-                    <source src={post.fileUrl} type="audio/mpeg" />
-                  </audio>
-                ) : (
-                  <a
-                    href={post.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 underline flex items-center gap-2 mt-2"
-                  >
-                    <FileText className="w-4 h-4" />
-                    Voir le fichier
-                  </a>
-                )}
+              <div className="mt-3 w-full bg-gray-100 flex justify-center items-center" style={{ minHeight: 200 }}>
+                {(() => {
+                  const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"];
+                  const videoExtensions = [".mp4", ".webm", ".ogg", ".mov", ".avi"];
+                  const url = post.fileUrl.toLowerCase();
+                  if (imageExtensions.some(ext => url.endsWith(ext))) {
+                    return (
+                      <img
+                        src={post.fileUrl}
+                        alt="Media"
+                        className="w-full h-auto max-h-[500px] object-contain rounded-lg block"
+                        style={{ background: "#f3f4f6" }}
+                      />
+                    );
+                  } else if (videoExtensions.some(ext => url.endsWith(ext))) {
+                    return (
+                      <video
+                        src={post.fileUrl}
+                        controls
+                        className="w-full h-auto max-h-[500px] object-contain rounded-lg block"
+                        style={{ background: "#f3f4f6" }}
+                      />
+                    );
+                  } else {
+                    return (
+                      <a href={post.fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">Voir le fichier</a>
+                    );
+                  }
+                })()}
               </div>
             )}
 

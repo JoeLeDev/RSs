@@ -30,5 +30,5 @@ export default function useUserProfile(id, userData) {
     fetchProfile();
   }, [id, userData]);
 
-  return { profileData, loading, error };
+  return { profileData, setProfileData, loading, error };
 } 

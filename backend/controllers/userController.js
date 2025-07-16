@@ -25,7 +25,11 @@ exports.syncUser = async (req, res) => {
 
 
 exports.updateUser = async (req, res) => {
-  const userId = req.user.firebaseUid; // <-- Utiliser firebaseUid de req.user
+  const userId = req.user.firebaseUid;
+  // Sécurité : on ne permet la modification que pour l'utilisateur courant
+  if (!req.user || !userId) {
+    return res.status(401).json({ message: "Non autorisé" });
+  }
   const { username, imageUrl, country, notifEmail, notifPush } = req.body;
 
   try {
@@ -242,6 +246,10 @@ exports.getMe = async (req, res) => {
 
 // Suppression du compte utilisateur courant
 exports.deleteMe = async (req, res) => {
+  // Sécurité : on ne permet la suppression que pour l'utilisateur courant
+  if (!req.user || !req.user._id) {
+    return res.status(401).json({ message: "Non autorisé" });
+  }
   try {
     const userId = req.user._id;
     await User.deleteOne({ _id: userId });

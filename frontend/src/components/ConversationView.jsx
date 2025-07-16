@@ -46,11 +46,17 @@ const ConversationView = ({ contact }) => {
   return (
     <div className="flex flex-col h-full">
       <div className="px-6 py-4 border-b flex items-center gap-3">
-        <img
-          src={contact.imageUrl || "/default-avatar.png"}
-          alt={contact.username}
-          className="w-10 h-10 rounded-full object-cover"
-        />
+        {contact.imageUrl && contact.imageUrl.trim() !== "" ? (
+          <img
+            src={contact.imageUrl}
+            alt={contact.username}
+            className="w-10 h-10 rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-lg font-semibold">
+            {contact.username ? contact.username.charAt(0).toUpperCase() : "?"}
+          </div>
+        )}
         <span className="font-bold text-lg">{contact.username}</span>
       </div>
       <div className="flex-1 overflow-y-auto p-6 bg-gray-50">

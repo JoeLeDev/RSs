@@ -10,7 +10,7 @@ import useUserProfile from '../hooks/useUserProfile';
 const Profile = () => {
   const { id } = useParams();
   const { user, userData, loading: authLoading, refreshUserData } = useAuth();
-  const { profileData, loading, error } = useUserProfile(id, userData);
+  const { profileData, setProfileData, loading, error } = useUserProfile(id, userData);
   const [formData, setFormData] = useState({ username: '', email: '', country: '' });
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -25,6 +25,17 @@ const Profile = () => {
     if (refreshUserData) refreshUserData();
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (profileData && ownProfile) {
+      setFormData({
+        username: profileData.username || '',
+        email: profileData.email || '',
+        country: profileData.country || ''
+      });
+      setImagePreviewUrl(profileData.imageUrl || null);
+    }
+  }, [profileData, ownProfile]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -55,7 +66,7 @@ const Profile = () => {
       return toast.error("Le nom d'utilisateur ne peut pas être vide.");
     }
     if (!user || !userData) {
-        return toast.error("Erreur d'authentification. Veuillez vous reconnecter.");
+      return toast.error("Erreur d'authentification. Veuillez vous reconnecter.");
     }
 
     try {
@@ -138,7 +149,7 @@ const Profile = () => {
               <div className="mt-2">
                 <FriendButton
                   profileUserId={profileData._id}
-                  onActionDone={handleActionDone}
+                  onActionDone={() => refreshUserData && refreshUserData()}
                 />
               </div>
             )}

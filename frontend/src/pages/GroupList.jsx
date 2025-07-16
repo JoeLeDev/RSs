@@ -244,20 +244,22 @@ const GroupList = () => {
                   if (pilot) {
                     return (
                       <div className="flex items-center mb-3 text-sm text-gray-700">
-                        {/* Photo de profil du pilote */}
-                        {pilot.imageUrl ? (
-                          <img
-                            src={pilot.imageUrl}
-                            alt={`${pilot.username} avatar`}
-                            className="w-8 h-8 rounded-full object-cover mr-2 border border-gray-200"
-                          />
-                        ) : (
-                          // Placeholder si pas de photo
-                          <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-semibold mr-2">
-                            {pilot.username ? pilot.username.charAt(0).toUpperCase() : ''}
+                        {pilot && (
+                          <div className="flex items-center mb-3 text-sm text-gray-700">
+                            {pilot.imageUrl && pilot.imageUrl.trim() !== "" ? (
+                              <img
+                                src={pilot.imageUrl}
+                                alt={`${pilot.username} avatar`}
+                                className="w-8 h-8 rounded-full object-cover mr-2 border border-gray-200"
+                              />
+                            ) : (
+                              <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-xs font-semibold mr-2">
+                                {pilot.username ? pilot.username.charAt(0).toUpperCase() : ''}
+                              </div>
+                            )}
+                            <span>Pilote : {pilot.username}</span>
                           </div>
                         )}
-                        <span>Pilote : {pilot.username}</span>
                       </div>
                     );
                   }

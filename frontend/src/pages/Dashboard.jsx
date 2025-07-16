@@ -96,7 +96,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-100">
       <Banner
         image={DashboardImage}
-        title="Dashboard"
+        title="Fil d'actualités"
         subtitle="Partagez vos moments avec la communauté"
         height="h-[400px]"
       />

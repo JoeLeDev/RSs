@@ -24,11 +24,17 @@ const ConversationList = ({ conversations, onSelect, selectedId }) => (
             className={`flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 ${selectedId === conv._id ? "bg-gray-200" : ""}`}
             onClick={() => onSelect(conv)}
           >
-            <img
-              src={conv.user.imageUrl || "/default-avatar.png"}
-              alt={conv.user.username}
-              className="w-10 h-10 rounded-full object-cover"
-            />
+            {conv.user.imageUrl && conv.user.imageUrl.trim() !== "" ? (
+              <img
+                src={conv.user.imageUrl}
+                alt={conv.user.username}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-lg font-semibold">
+                {conv.user.username ? conv.user.username.charAt(0).toUpperCase() : "?"}
+              </div>
+            )}
             <div className="flex-1 min-w-0">
               <div className="font-semibold truncate">{conv.user.username}</div>
               <div className="text-xs text-gray-500 truncate">{conv.lastMessage}</div>
@@ -165,11 +171,17 @@ const Messenger = () => {
               className={`flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100`}
               onClick={() => setSelected({ _id: m._id, user: m })}
             >
-              <img
-                src={m.imageUrl || "/default-avatar.png"}
-                alt={m.username}
-                className="w-10 h-10 rounded-full object-cover"
-              />
+              {m.imageUrl && m.imageUrl.trim() !== "" ? (
+                <img
+                  src={m.imageUrl}
+                  alt={m.username}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-lg font-semibold">
+                  {m.username ? m.username.charAt(0).toUpperCase() : "?"}
+                </div>
+              )}
               <div className="flex-1 min-w-0">
                 <div className="font-semibold truncate">{m.username}</div>
                 <div className="text-xs text-gray-400 truncate">Nouveau message</div>

@@ -14,6 +14,10 @@ const getEvents = async (req, res) => {
 
 // Créer un nouvel événement
 const createEvent = async (req, res) => {
+  // Seuls les admins ou gestionnaires d'événements peuvent créer
+  if (req.user.role !== 'admin' && req.user.role !== 'event_manager') {
+    return res.status(403).json({ message: "Accès refusé : seuls les admins ou gestionnaires peuvent créer un événement." });
+  }
   const { title, description, start, end } = req.body;
   const image = req.file ? req.file.path : null;
 
@@ -53,6 +57,10 @@ const createEvent = async (req, res) => {
 
 // Mettre à jour un événement
 const updateEvent = async (req, res) => {
+  // Seuls les admins ou gestionnaires d'événements peuvent modifier
+  if (req.user.role !== 'admin' && req.user.role !== 'event_manager') {
+    return res.status(403).json({ message: "Accès refusé : seuls les admins ou gestionnaires peuvent modifier un événement." });
+  }
   const { id } = req.params;
   const { title, description, start, end } = req.body;
   const image = req.file ? req.file.path : undefined;
@@ -102,6 +110,10 @@ const updateEvent = async (req, res) => {
 
 // Supprimer un événement
 const deleteEvent = async (req, res) => {
+  // Seuls les admins ou gestionnaires d'événements peuvent supprimer
+  if (req.user.role !== 'admin' && req.user.role !== 'event_manager') {
+    return res.status(403).json({ message: "Accès refusé : seuls les admins ou gestionnaires peuvent supprimer un événement." });
+  }
   const { id } = req.params;
 
   try {
@@ -140,6 +152,10 @@ const getEventById = async (req, res) => {
 
 // Supprimer plusieurs événements
 const bulkDeleteEvents = async (req, res) => {
+  // Seuls les admins ou gestionnaires d'événements peuvent supprimer en masse
+  if (req.user.role !== 'admin' && req.user.role !== 'event_manager') {
+    return res.status(403).json({ message: "Accès refusé : seuls les admins ou gestionnaires peuvent supprimer des événements." });
+  }
   const { ids } = req.body;
 
   if (!Array.isArray(ids) || ids.length === 0) {

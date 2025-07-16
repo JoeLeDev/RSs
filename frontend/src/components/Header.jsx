@@ -117,7 +117,7 @@ const Header = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md py-4 px-6 flex flex-wrap justify-between items-center">
+    <nav className="bg-white shadow-md py-4 px-6 flex flex-wrap justify-between items-center sticky top-0 z-50">
       <Link to="/" className="text-2xl font-bold text-blue-700">
         <img src={logo} alt="logo" className="w-[55px] h-[60px]" />
       </Link>
@@ -138,7 +138,7 @@ const Header = () => {
             <>
 
               <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
-                <LayoutDashboard className="w-4 h-4 text-blue-700" /> Dashboard
+                <LayoutDashboard className="w-4 h-4 text-blue-700" /> Fil d'actualités
               </Link>
               <Link to="/groups" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
                 <Users className="w-4 h-4 text-blue-700" /> Groupes

@@ -20,6 +20,10 @@ exports.getAllGroups = async (req, res) => {
 
 // ➕ Créer un groupe
 exports.createGroup = async (req, res) => {
+  // Seuls les admins ou gestionnaires peuvent créer un groupe
+  if (req.user.role !== 'admin' && req.user.role !== 'pilote') {
+    return res.status(403).json({ message: "Accès refusé : seuls les admins ou gestionnaires peuvent créer un groupe." });
+  }
   const { name, description, meetingDay, meetingLocation } = req.body;
   if (!name || !meetingDay) return res.status(400).json({ message: "Nom et jour requis." });
   try {
@@ -40,24 +44,24 @@ exports.createGroup = async (req, res) => {
 };
 
 // 🛠️ Mettre à jour un groupe
-
 exports.updateGroup = async (req, res) => {
   try {
     const id = req.params.id;
     const isMongoId = mongoose.Types.ObjectId.isValid(id);
-
     const group = isMongoId
       ? await Group.findById(id)
       : await Group.findOne({ groupId: Number(id) });
-
     if (!group) return res.status(404).json({ message: "Groupe introuvable" });
-
+    // Seuls les admins ou pilotes du groupe peuvent modifier
+    const isAdmin = req.user.role === 'admin';
+    const isPilot = group.roles?.some(r => r.role === 'pilote' && r.userId.toString() === req.user._id);
+    if (!isAdmin && !isPilot) {
+      return res.status(403).json({ message: "Accès refusé : seuls les admins ou gestionnaires peuvent modifier ce groupe." });
+    }
     group.name = req.body.name || group.name;
     group.description = req.body.description || group.description;
     group.meetingLocation = req.body.meetingLocation || group.meetingLocation;
-
     await group.save();
-
     res.status(200).json(group);
   } catch (err) {
     console.error("Erreur updateGroup:", err);
@@ -65,21 +69,22 @@ exports.updateGroup = async (req, res) => {
   }
 };
 
-
 // 🗑️ Supprimer un groupe
 exports.deleteGroup = async (req, res) => {
   try {
     const id = req.params.id;
     const isMongoId = mongoose.Types.ObjectId.isValid(id);
-
     const group = isMongoId
       ? await Group.findById(id)
       : await Group.findOne({ groupId: Number(id) });
-
     if (!group) return res.status(404).json({ message: "Groupe introuvable" });
-
-    await Group.deleteOne({ _id: group._id }); // ✅ safe & simple
-
+    // Seuls les admins ou pilotes du groupe peuvent supprimer
+    const isAdmin = req.user.role === 'admin';
+    const isPilot = group.roles?.some(r => r.role === 'pilote' && r.userId.toString() === req.user._id);
+    if (!isAdmin && !isPilot) {
+      return res.status(403).json({ message: "Accès refusé : seuls les admins ou gestionnaires peuvent supprimer ce groupe." });
+    }
+    await Group.deleteOne({ _id: group._id });
     res.status(200).json({ message: "Groupe supprimé avec succès" });
   } catch (err) {
     console.error("Erreur deleteGroup:", err);
@@ -132,8 +137,6 @@ exports.joinGroup = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
-
-
 
 // ➖ Quitter un groupe
 exports.leaveGroup = async (req, res) => {
@@ -210,7 +213,6 @@ exports.getGroupMembers = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
-
 
 exports.kickMember = async (req, res) => {
   const { id } = req.params;

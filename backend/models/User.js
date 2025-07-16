@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ""
   },
+  country: String,
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   friendRequestsSent: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   friendRequestsReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],

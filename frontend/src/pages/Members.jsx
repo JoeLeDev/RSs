@@ -69,7 +69,13 @@ const Members = () => {
         <ul className="space-y-3">
           {filteredMembers.map(member => (
             <li key={member._id} className="flex items-center gap-4 bg-white p-3 rounded shadow">
-              <img src={member.imageUrl || '/default-avatar.png'} alt={member.username} className="w-12 h-12 rounded-full object-cover" />
+              {member.imageUrl && member.imageUrl.trim() !== "" ? (
+                <img src={member.imageUrl} alt={member.username} className="w-12 h-12 rounded-full object-cover" />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-xl font-semibold">
+                  {member.username ? member.username.charAt(0).toUpperCase() : "?"}
+                </div>
+              )}
               <span className="flex-1 font-semibold">{member.username}</span>
               <FriendButton
                 profileUserId={member._id}
