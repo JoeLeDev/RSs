@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Trash, Pencil, EyeOff } from "lucide-react";
-import API from "../../api/axios";
+import API from "../../api/Axios";
 import { useAuth } from "../../contexts/AuthContext";
 
 const CommentSection = ({ post, onUpdate }) => {
