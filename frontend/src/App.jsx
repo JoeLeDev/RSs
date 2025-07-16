@@ -14,7 +14,7 @@ import Auth from "./pages/Auth.jsx";
 import Profile from "./pages/Profile.jsx";
 import Events from "./pages/Events.jsx";
 import EventDetailPage from "./pages/EventDetailPage.jsx";
-import Messenger from "./pages/messenger.jsx";
+import Messenger from "./pages/Messenger.jsx";
 import PostDetail from "./pages/PostDetail";
 
 function App() {
