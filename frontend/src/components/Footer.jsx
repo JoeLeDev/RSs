@@ -1,9 +1,8 @@
 import React from 'react';
-import InstagramLogo from '../Assets/footer/Instagram.png';
-import TwitterLogo from '../Assets/footer/Twitter.png';
-import FacebookLogo from '../Assets/footer/Facebook.png';
-import TiktokLogo from '../Assets/footer/Tiktok.jpg';
-import YoutubeLogo from '../Assets/footer/Youtube.jpg';
+import InstagramLogo from '../assets/footer/Instagram.png';
+import FacebookLogo from '../assets/footer/Facebook.png';
+import TiktokLogo from '../assets/footer/Tiktok.jpg';
+import YoutubeLogo from '../assets/footer/Youtube.png';
 
 const Footer = () => {
   return (
