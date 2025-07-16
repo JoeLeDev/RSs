@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import API from "../../api/axios";
+import API from "../../api/Axios";
 
 const PostForm = ({ groupId = null, onPostCreated }) => {
   const [content, setContent] = useState("");
