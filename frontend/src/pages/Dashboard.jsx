@@ -10,6 +10,7 @@ import CalendarComponent from '../components/CalendarComponent';
 import ContactList from "../components/ContactList";
 import ChatWindow from "../components/ChatWindow";
 
+
 const Dashboard = () => {
   const { user, userData, loading, logout, refreshUserData } = useAuth();
   const navigate = useNavigate();
