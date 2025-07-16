@@ -7,7 +7,7 @@ import ManageGroupModal from "../components/ManageModal";
 import { useAuth } from "../contexts/AuthContext";
 import { Search } from "lucide-react";
 import FilterDropdown from "../components/FilterDropdown";
-import GroupImage from "../assets/group.jpg";
+import GroupImage from "../assets/Group.jpg";
 import Banner from "../components/Banner";
 import { MapPin, Users, Calendar } from "lucide-react";
 import ContactList from "../components/ContactList";
