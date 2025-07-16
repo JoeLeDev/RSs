@@ -69,7 +69,7 @@ const PostList = ({ posts = [], onDelete }) => {
         return (
           <div
             key={post._id}
-            className="bg-white  rounded-xl shadow-sm relative"
+            className="bg-white rounded-xl shadow-sm relative"
           >
             {(userData?._id === post.author._id || userData?.role === "admin") && (
               <div className="absolute top-3 right-3">
@@ -102,7 +102,7 @@ const PostList = ({ posts = [], onDelete }) => {
             )}
 
             {/* Section Auteur avec photo de profil */}
-            <div className="flex items-center mb-3">
+            <div className="flex items-center mx-4 py-4">
               {/* Photo de profil de l'auteur */}
               {post.author.imageUrl && post.author.imageUrl.trim() !== "" ? (
                 <img
@@ -127,7 +127,7 @@ const PostList = ({ posts = [], onDelete }) => {
               </div>
             </div>
 
-            <p className="text-gray-700 whitespace-pre-line mb-4">{post.content}</p>
+            <p className="text-gray-700 whitespace-pre-line mx-4 mb-4">{post.content}</p>
 
             {post.fileUrl && (
               <div className="mt-3 w-full bg-gray-100 flex justify-center items-center" style={{ minHeight: 200 }}>
@@ -140,7 +140,7 @@ const PostList = ({ posts = [], onDelete }) => {
                       <img
                         src={post.fileUrl}
                         alt="Media"
-                        className="w-full h-auto max-h-[500px] object-contain rounded-lg block"
+                        className="w-full h-auto max-h-[500px] object-contain  block"
                         style={{ background: "#f3f4f6" }}
                       />
                     );
@@ -149,7 +149,7 @@ const PostList = ({ posts = [], onDelete }) => {
                       <video
                         src={post.fileUrl}
                         controls
-                        className="w-full h-auto max-h-[500px] object-contain rounded-lg block"
+                        className="w-full h-auto max-h-[500px] object-contain block"
                         style={{ background: "#f3f4f6" }}
                       />
                     );
@@ -162,7 +162,7 @@ const PostList = ({ posts = [], onDelete }) => {
               </div>
             )}
 
-            <div className="flex items-center gap-4 mt-4 border-t pt-4">
+            <div className="flex items-center gap-4 mt-4 border-t pt-4 mx-4">
               <button
                 onClick={() => isLiked(post) ? handleUnlike(post._id) : handleLike(post._id)}
                 className={`flex items-center gap-2 ${
@@ -185,7 +185,7 @@ const PostList = ({ posts = [], onDelete }) => {
               <CommentSection post={post} onUpdate={onDelete} />
             )}
 
-            <p className="text-gray-500 text-sm mt-2">
+            <p className="text-gray-500 text-sm mt-2 mx-4 pb-4">
               {new Date(post.createdAt).toLocaleDateString("fr-FR", {
                 year: "numeric",
                 month: "long",
