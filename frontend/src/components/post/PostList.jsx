@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import API from "../../api/axios";
+import API from "../../api/Axios";
 import { MoreVertical, Trash, Pencil, FileText, ThumbsUp, MessageCircle } from "lucide-react";
 import PostEditModal from "./PostEditModal";
 import CommentSection from "./CommentSection";
