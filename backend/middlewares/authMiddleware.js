@@ -17,9 +17,6 @@ if (!admin.apps.length) {
   });
 }
 
-console.log("Token reçu :", token);
-console.log("decodedToken :", decodedToken);
-console.log("userMongo trouvé :", userMongo);
 
 module.exports = async function (req, res, next) {
   const authHeader = req.headers.authorization;
@@ -40,6 +37,9 @@ module.exports = async function (req, res, next) {
       role: userMongo.role,
     };
     console.log('Utilisateur authentifié:', req.user);
+    console.log("Token reçu :", token);
+    console.log("decodedToken :", decodedToken);
+    console.log("userMongo trouvé :", userMongo);
     next();
   } catch (error) {
     return res.status(401).json({ message: "Token invalide" });
