@@ -4,7 +4,7 @@ const { Server } = require('socket.io');
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: ['http://localhost:5173', 'https://r-ss.vercel.app'], 
+  cors: { origin: ['http://localhost:5173', 'https://r-ss.vercel.app', 'https://r-ss-git-master-joeledevs-projects.vercel.app'], 
    credentials: true }
 });
 
