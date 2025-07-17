@@ -43,8 +43,7 @@ const CalendarComponent = () => {
   const [showForm, setShowForm] = useState(false);
   const [selectedEventIds, setSelectedEventIds] = useState([]);
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL;
-  const API_URL = `${API_BASE_URL}/api/events`;
+  const API_URL = `${import.meta.env.VITE_API_URL}/api/events`;
 
   const fetchEvents = async () => {
     console.log("fetchEvents: Début du chargement des événements.");
@@ -65,7 +64,7 @@ const CalendarComponent = () => {
       };
       console.log("Configuration de la requête:", config);
       console.log("URL de l'API:", API_URL);
-      const { data } = await axios.get(API_URL, config);
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/events`, config);
       console.log("Données reçues:", data);
       const formattedEvents = data.map(event => ({
         id: event._id,
@@ -126,7 +125,7 @@ const CalendarComponent = () => {
         formData.append('image', newEvent.image);
       }
 
-      const response = await axios.post(`${API_URL}`, formData, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/events`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
@@ -180,7 +179,7 @@ const CalendarComponent = () => {
         }
       });
 
-      const response = await axios.put(`${API_URL}/${eventId}`, formData, {
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/events/${eventId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
@@ -211,7 +210,7 @@ const CalendarComponent = () => {
           },
         };
         console.log("Tentative de suppression de l'événement avec ID :", eventId);
-        await axios.delete(`${API_URL}/${eventId}`, config);
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/events/${eventId}`, config);
         setEvents(events.filter(event => event.id !== eventId));
         setSelectedEvent(null);
         setEditedEvent({ title: '', description: '', image: '', start: '', end: '' });
@@ -264,7 +263,7 @@ const CalendarComponent = () => {
         data: { ids: selectedEventIds }
       };
       console.log("Tentative de suppression en masse des événements avec IDs :", selectedEventIds);
-      await axios.delete(`${API_URL}/bulk`, config);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/events/bulk`, config);
       setEvents(events.filter(event => !selectedEventIds.includes(event.id)));
       setSelectedEventIds([]);
       setSelectedEvent(null);

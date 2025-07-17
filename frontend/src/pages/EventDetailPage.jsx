@@ -21,8 +21,7 @@ const EventDetailPage = () => {
     end: '',
   });
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL;
-  const API_URL = `${API_BASE_URL}/api/events`;
+  const API_URL = `${import.meta.env.VITE_API_URL}/api/events`;
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -38,7 +37,7 @@ const EventDetailPage = () => {
             Authorization: `Bearer ${token}`,
           },
         };
-        const { data } = await axios.get(`${API_URL}/${id}`, config);
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/events/${id}`, config);
         setEvent({
           ...data,
           start: new Date(data.start),
@@ -104,7 +103,7 @@ const EventDetailPage = () => {
         formData.append('image', '');
       }
 
-      const response = await axios.put(`${API_URL}/${event._id}`, formData, {
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/events/${event._id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
@@ -170,7 +169,7 @@ const EventDetailPage = () => {
       {event.image && (
         <div className="mb-6">
           <img 
-            src={`${API_BASE_URL}/${event.image}`} 
+            src={`${import.meta.env.VITE_API_URL}/${event.image}`} 
             alt={event.title} 
             className=" h-64 object-cover rounded-lg"
           />
