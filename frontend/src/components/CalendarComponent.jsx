@@ -63,7 +63,7 @@ const CalendarComponent = () => {
       };
       console.log("Configuration de la requête:", config);
       console.log("URL de l'API:", API_URL);
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/events`, config);
+      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/events`, config);
       console.log("Données reçues:", data);
       const formattedEvents = data.map(event => ({
         id: event._id,
@@ -124,7 +124,7 @@ const CalendarComponent = () => {
         formData.append('image', newEvent.image);
       }
 
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/events`, formData, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/events`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
@@ -178,7 +178,7 @@ const CalendarComponent = () => {
         }
       });
 
-      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/events/${eventId}`, formData, {
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/events/${eventId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
@@ -209,7 +209,7 @@ const CalendarComponent = () => {
           },
         };
         console.log("Tentative de suppression de l'événement avec ID :", eventId);
-        await axios.delete(`${import.meta.env.VITE_API_URL}/api/events/${eventId}`, config);
+        await axios.delete(`${import.meta.env.VITE_API_URL}/events/${eventId}`, config);
         setEvents(events.filter(event => event.id !== eventId));
         setSelectedEvent(null);
         setEditedEvent({ title: '', description: '', image: '', start: '', end: '' });
@@ -262,7 +262,7 @@ const CalendarComponent = () => {
         data: { ids: selectedEventIds }
       };
       console.log("Tentative de suppression en masse des événements avec IDs :", selectedEventIds);
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/events/bulk`, config);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/events/bulk`, config);
       setEvents(events.filter(event => !selectedEventIds.includes(event.id)));
       setSelectedEventIds([]);
       setSelectedEvent(null);

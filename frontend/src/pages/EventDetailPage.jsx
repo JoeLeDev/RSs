@@ -37,7 +37,7 @@ const EventDetailPage = () => {
             Authorization: `Bearer ${token}`,
           },
         };
-        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/events/${id}`, config);
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/events/${id}`, config);
         setEvent({
           ...data,
           start: new Date(data.start),
@@ -103,7 +103,7 @@ const EventDetailPage = () => {
         formData.append('image', '');
       }
 
-      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/events/${event._id}`, formData, {
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/events/${event._id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
