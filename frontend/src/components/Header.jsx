@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useState, useEffect, useRef } from 'react';
 import logo from '../assets/header/ICC-.png';
-import { Home, LayoutDashboard, Users, Calendar, MessageCircle, Bell, Settings } from 'lucide-react';
+import { Home, LayoutDashboard, Users, User, Calendar, MessageCircle, Bell, Settings } from 'lucide-react';
 import API from '../api/Axios';
 import { io } from 'socket.io-client';
 import { toast as toastify } from 'react-toastify';
@@ -144,7 +144,7 @@ const Header = () => {
                 <Users className="w-4 h-4 text-blue-700" /> Groupes
               </Link>
               <Link to="/members" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
-                <Users className="w-4 h-4 text-blue-700" /> Membres
+                <User className="w-4 h-4 text-blue-700" /> Membres
               </Link>
               <Link to="/events" className="text-gray-700 hover:text-blue-600 flex items-center gap-1" onClick={toggleMenu}>
                 <Calendar className="w-4 h-4 text-blue-700" /> Événements

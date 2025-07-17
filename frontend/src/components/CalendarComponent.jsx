@@ -46,9 +46,8 @@ const CalendarComponent = () => {
   const API_URL = `${import.meta.env.VITE_API_URL}/events`;
 
   const fetchEvents = async () => {
-    console.log("fetchEvents: Début du chargement des événements.");
+
     if (!user || !user.getIdToken) {
-      console.log("fetchEvents: Utilisateur non connecté ou getIdToken manquant.");
       setLoading(false);
       return;
     }
@@ -61,10 +60,8 @@ const CalendarComponent = () => {
         },
         withCredentials: true
       };
-      console.log("Configuration de la requête:", config);
-      console.log("URL de l'API:", API_URL);
+
       const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/events`, config);
-      console.log("Données reçues:", data);
       const formattedEvents = data.map(event => ({
         id: event._id,
         title: event.title,
@@ -75,7 +72,6 @@ const CalendarComponent = () => {
       }));
       setEvents(formattedEvents);
       setError(null);
-      console.log("fetchEvents: Événements chargés avec succès.");
     } catch (err) {
       console.error("fetchEvents: Erreur détaillée lors du chargement des événements :", err);
       console.error("fetchEvents: Configuration de la requête qui a échoué:", err.config);
