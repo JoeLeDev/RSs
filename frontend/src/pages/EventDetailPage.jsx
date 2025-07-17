@@ -21,7 +21,7 @@ const EventDetailPage = () => {
     end: '',
   });
 
-  const API_URL = `${import.meta.env.VITE_API_URL}/api/events`;
+  const API_URL = `${import.meta.env.VITE_API_URL}/events`;
 
   useEffect(() => {
     const fetchEvent = async () => {

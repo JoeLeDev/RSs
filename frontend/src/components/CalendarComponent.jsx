@@ -43,7 +43,7 @@ const CalendarComponent = () => {
   const [showForm, setShowForm] = useState(false);
   const [selectedEventIds, setSelectedEventIds] = useState([]);
 
-  const API_URL = `${import.meta.env.VITE_API_URL}/api/events`;
+  const API_URL = `${import.meta.env.VITE_API_URL}/events`;
 
   const fetchEvents = async () => {
     console.log("fetchEvents: Début du chargement des événements.");
