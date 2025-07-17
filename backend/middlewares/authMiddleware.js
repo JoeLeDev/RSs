@@ -17,6 +17,10 @@ if (!admin.apps.length) {
   });
 }
 
+console.log("Token reçu :", token);
+console.log("decodedToken :", decodedToken);
+console.log("userMongo trouvé :", userMongo);
+
 module.exports = async function (req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {

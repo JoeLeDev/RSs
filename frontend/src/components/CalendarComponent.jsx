@@ -55,7 +55,6 @@ const CalendarComponent = () => {
     try {
       setLoading(true);
       const token = await user.getIdToken();
-      console.log("Token obtenu:", token);
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,

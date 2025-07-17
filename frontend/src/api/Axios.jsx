@@ -2,7 +2,8 @@ import axios from 'axios';
 import { auth } from '../Firebase';
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true,
 });
 console.log(import.meta.env.VITE_API_URL);
 // Attache le token Firebase automatiquement
