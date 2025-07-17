@@ -3,6 +3,7 @@ import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndP
    signOut, updateProfile, FacebookAuthProvider, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../Firebase";
 import axios from "axios";
+import API from "@/api/Axios";
 
 const AuthContext = createContext();
 
@@ -21,7 +22,7 @@ const loginWithGoogle = async () => {
     const token = await result.user.getIdToken();
     
     // Synchronisation avec MongoDB
-    await axios.post(
+    await API.post(
       `${import.meta.env.VITE_API_URL}/auth/sync`,
       {
         firebaseUid: result.user.uid,
@@ -49,7 +50,7 @@ const loginWithFacebook = async () => {
     const token = await result.user.getIdToken();
     
     // Synchronisation avec MongoDB
-    await axios.post(
+    await API.post(
       `${import.meta.env.VITE_API_URL}/auth/sync`,
       {
         firebaseUid: result.user.uid,
@@ -84,7 +85,7 @@ export const AuthProvider = ({ children }) => {
           const token = await currentUser.getIdToken();
           localStorage.setItem('token', token);
           try {
-            const { data } = await axios.get(
+            const { data } = await API.get(
               `${import.meta.env.VITE_API_URL}/auth/me`,
               {
                 headers: {
@@ -135,7 +136,7 @@ export const AuthProvider = ({ children }) => {
 
       const token = await res.user.getIdToken();
 
-      await axios.post(
+      await API.post(
         `${import.meta.env.VITE_API_URL}/auth/sync`,
         {
           firebaseUid: res.user.uid,
@@ -168,7 +169,7 @@ export const AuthProvider = ({ children }) => {
   const refreshUserData = async () => {
     try {
       const token = await auth.currentUser.getIdToken();
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {
+        const res = await API.get(`${import.meta.env.VITE_API_URL}/users/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
