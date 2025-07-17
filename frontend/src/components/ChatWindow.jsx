@@ -55,7 +55,7 @@ const ChatWindow = ({ contact, onClose }) => {
         <span className="font-bold">{contact.username}</span>
         <button onClick={onClose} className="text-gray-500 hover:text-red-500">✕</button>
       </div>
-      <div className="p-3 h-64 overflow-y-auto flex-1">
+      <div className="p-3 h-52 overflow-y-auto flex-1">
         {loading ? (
           <p className="text-gray-400 text-center">Chargement...</p>
         ) : messages.length === 0 ? (
