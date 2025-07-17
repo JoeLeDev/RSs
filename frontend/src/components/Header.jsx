@@ -53,7 +53,7 @@ const Header = () => {
   useEffect(() => {
     if (!userData?._id) return;
     if (!socketRef.current) {
-      socketRef.current = io('http://localhost:5001', { withCredentials: true });
+      socketRef.current = io(import.meta.env.VITE_API_URL, { withCredentials: true });
       socketRef.current.on('connect', () => {
         console.log('Socket.io connecté !');
       });
