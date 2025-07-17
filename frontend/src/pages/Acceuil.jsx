@@ -10,6 +10,7 @@ import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 
 
+
 const Acceuil = () => {
   return (
     <div className="font-sans antialiased">
