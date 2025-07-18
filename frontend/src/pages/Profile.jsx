@@ -122,7 +122,7 @@ const Profile = () => {
   };
 
   if (authLoading || loading) {
-    return <div className="text-center mt-6">Chargement du profil...</div>;
+    return <Loader />;
   }
 
   if (error) {
