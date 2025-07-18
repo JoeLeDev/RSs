@@ -6,6 +6,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import FriendButton from '../components/FriendButton';
 import isOwnProfile from '../utils/isOwnProfile';
 import useUserProfile from '../hooks/useUserProfile';
+import Loader from '../components/Loader';
 
 const Profile = () => {
   const { id } = useParams();
