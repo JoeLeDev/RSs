@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import API from '../api/Axios';
 import { useAuth } from '../contexts/AuthContext';
 import FriendButton from '../components/FriendButton';
+import Loader from "../components/Loader";
 
 const Members = () => {
   const { user, userData, refreshUserData } = useAuth();
@@ -44,6 +45,8 @@ const Members = () => {
     if (filter === "Demandes d'amis") return userData.friendRequestsReceived?.some(f => (f._id || f) === m._id);
     return true;
   });
+
+  if (loading) return <Loader />;
 
   return (
     <div className="container mx-auto p-4">

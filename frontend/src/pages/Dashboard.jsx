@@ -9,6 +9,7 @@ import DashboardImage from '../assets/Group.jpg';
 import CalendarComponent from '../components/CalendarComponent';
 import ContactList from "../components/ContactList";
 import ChatWindow from "../components/ChatWindow";
+import Loader from "../components/Loader";
 
 
 const Dashboard = () => {
@@ -84,13 +85,7 @@ const Dashboard = () => {
   };
 
   if (loading || isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-100 py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          <p className="text-center text-gray-600">Chargement...</p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   return (

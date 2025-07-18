@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import Loader from "./Loader";
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -282,7 +283,7 @@ const CalendarComponent = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-4">Chargement des événements...</div>;
+    return <Loader />;
   }
 
   if (error) {

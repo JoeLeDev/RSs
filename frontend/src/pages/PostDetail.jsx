@@ -4,6 +4,7 @@ import API from "../api/Axios";
 import { useAuth } from "../contexts/AuthContext";
 import PostList from "../components/post/PostList";
 import PostForm from "../components/post/PostForm";
+import Loader from "../components/Loader";
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -27,7 +28,7 @@ const PostDetail = () => {
 
   useEffect(() => { fetchPost(); }, [id]);
 
-  if (loading) return <div className="text-center mt-8">Chargement...</div>;
+  if (loading) return <Loader />;
   if (error) return <div className="text-center text-red-500 mt-8">{error}</div>;
   if (!post) return null;
 

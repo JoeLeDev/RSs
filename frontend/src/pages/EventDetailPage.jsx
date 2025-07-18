@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import Loader from "../components/Loader";
 
 const EventDetailPage = () => {
   const { id } = useParams();
@@ -153,7 +154,7 @@ const EventDetailPage = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-4">Chargement des détails de l'événement...</div>;
+    return <Loader />;
   }
 
   if (error) {

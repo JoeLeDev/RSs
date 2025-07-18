@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import API from "../api/Axios";
 import { useAuth } from "../contexts/AuthContext";
+import Loader from "./Loader";
 
 const ChatWindow = ({ contact, onClose }) => {
   const { user, userData } = useAuth();
@@ -57,7 +58,7 @@ const ChatWindow = ({ contact, onClose }) => {
       </div>
       <div className="p-3 h-52 overflow-y-auto flex-1">
         {loading ? (
-          <p className="text-gray-400 text-center">Chargement...</p>
+          <Loader />
         ) : messages.length === 0 ? (
           <p className="text-gray-400 text-center">Début de la conversation</p>
         ) : (

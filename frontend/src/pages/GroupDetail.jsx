@@ -9,6 +9,7 @@ import ManageGroupModal from "../components/ManageModal";
 import PostForm from "../components/post/PostForm";
 import PostList from "../components/post/PostList";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../components/Loader";
 
 
 const GroupDetail = () => {
@@ -96,7 +97,7 @@ const GroupDetail = () => {
   };
 
   if (error) return <p className="text-red-600 text-center mt-6">{error}</p>;
-  if (!group) return <p className="text-center mt-6">Chargement...</p>;
+  if (!group) return <Loader />;
 
   const ability = defineAbilityFor(userData, group);
 
