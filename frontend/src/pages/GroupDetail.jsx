@@ -101,6 +101,10 @@ const GroupDetail = () => {
 
   const ability = defineAbilityFor(userData, group);
 
+  if (loading || isLoading) {
+    return <Loader />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Bannière */}

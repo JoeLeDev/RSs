@@ -13,6 +13,7 @@ import { MapPin, Users, Calendar } from "lucide-react";
 import ContactList from "../components/ContactList";
 import ChatWindow from "../components/ChatWindow";
 import CalendarComponent from "../components/CalendarComponent";
+import Loader from "../components/Loader";
 
 const days = [
   "Lundi",
@@ -145,6 +146,10 @@ const GroupList = () => {
     return "Tous les groupes";
   };
   const scrollRef = useRef(null);
+
+  if (loading || isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="w-screen mx-auto">
