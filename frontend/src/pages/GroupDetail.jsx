@@ -120,6 +120,8 @@ const GroupDetail = () => {
           <Calendar className="w-5 h-5" /> {group.meetingDay}
           <Users className="w-5 h-5" /> {group.members?.length} membre
           {group.members?.length > 1 ? "s" : ""}
+          <MapPin className="w-5 h-5" /> {group.meetingLocation}
+          {loading || isLoading && <Loader />}
         </p>
 
         <div className="mt-6 flex justify-center gap-4 flex-wrap">
@@ -160,11 +162,6 @@ const GroupDetail = () => {
           <p className="text-gray-700">{group.description}</p>
         </div>
 
-        <div className="text-gray-600 space-y-1 mb-6">
-          <p className="flex items-center gap-2">
-            <MapPin className="w-4 h-4" /> Localisation : Non définie
-          </p>
-        </div>
 
         {isMember() && (
           <PostForm groupId={group._id} user={user} onPostCreated={fetchPosts} />
